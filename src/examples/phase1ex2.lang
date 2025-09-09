@@ -1,0 +1,8 @@
+var x = 1 + (2 - 3) * 4 / 5 % 6;
+var y = 26 & 13 | 7 ^ 255;
+print x + y;
+
+var z = x - 6 * 2 * 8 / 6;
+print x;
+print y;
+print z;

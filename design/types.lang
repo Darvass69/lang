@@ -1,0 +1,398 @@
+# ---------------------------------------------------------------------------- #
+This file contains rough draft of the language, and code transformed from Typescript.
+It should give you an idea of what it will look like, but nothing here is final.
+# ---------------------------------------------------------------------------- #
+
+
+
+export struct SomeStruct {
+	a: int
+	b: string*
+}
+
+
+trait SomeInterface {
+	doSomething(x: int32) -> void;
+	returnATuple() -> [x: int32, y: int32, int32, ...someMore: int32[5], ...rest: int32[]]
+}
+
+implement SomeInterface for SomeStruct {
+	doSomething(x) => {...}
+	returnATuple() => {...} // type inferred
+}
+
+implement SomeStruct {
+	translate(x: int32) // how do we mark that this should be mutable?
+	-> int32 => {} 
+}
+
+
+
+# ---------------------------------------------------------------------------- #
+
+TODO
+- move semantics / memory management
+	- how do we do memory? const/mutable? nullable like `pointer?` instead of `pointer*`?
+	- garbage collector opt in? Decorate a function to make it garbage collected? `@GCed`
+
+- pointers? how do we mark ownership? How do we mark mutability?
+	- `A*`
+	- `A*?`for nullable? null vs nullptr?
+	- `A&` for ref?
+	- `A!` for taking ownership (for destruction)
+
+- constructors?
+	- `implement ctor for SomeStruct {}` ?
+	- `implement SomeStruct {<ctor>()}` ?
+	- `implement SomeStruct {<new>()}` ?
+
+- strings? how we handle them? what methods do we need?
+	- do we do ``, f"", or "" for formatted strings? And inside is it `${}`, `{}` or something else?
+	- do we do """ """ for raw strings?
+	- characters vs strings?
+
+- arrays/vector? slices?
+	- static arrays
+	- dynamic arrays
+
+- type manipulation
+	- we want to be able to manipulate types so we can merge and create new types how we want.
+	- Probably going to go in the meta programming part of the language
+	- Overload on union (|) and intersection (&) ?
+
+- type compatibility
+	- there is 3 ways a type can be compatible
+		1. type 1 and type 2 are exactly the same
+		2. type 1 can be assigned to type 2 (type 1 is a subset/variant of type 2, like int32<positive> can be assigned to int32)
+		3. type 1 is a 
+
+- closures
+
+# ---------------------------------------------------------------------------- #
+
+implement Array<T> {
+	map(
+		callbackfn: (value: T*, index: int32 & positive, array: Array<T>*) -> T*, //? here, T should be able to be inferred and correctly mapped based on the function.
+		// Example: if the function is fn<T = int32 | float32 | null>(value: T) -> T, we should be able to know that an int32 will be mapped to an int32 and not float32 or null
+		thisArg?: any
+	)
+}
+
+# --------------------------------- token.ts --------------------------------- #
+
+enum TokenType {
+	Add,
+	Sub,
+	Identifier,
+}
+
+struct Token {
+	type: TokenType;
+  value: string;
+}
+//? how do we do JSON?
+
+implement JSON for Token {
+	toString() => {...}
+
+	fromString() => {...}
+}
+
+// ad-hoc struct
+//? Would it still be a good pattern?
+const RESERVED_SYMBOLS = {
+  "true": TokenType.Boolean,
+  "false": TokenType.Boolean,
+
+  "+": TokenType.Add,
+  "-": TokenType.Sub,
+  "*": TokenType.Multiply,
+  "/": TokenType.Divide,
+  "%": TokenType.Modulo,
+
+  "|": TokenType.BitwiseOr,
+  "^": TokenType.BitwiseXor,
+  "&": TokenType.BitwiseAnd,
+
+  "=": TokenType.Assignment,
+  "var": TokenType.Var,
+
+  "(": TokenType.OpenParen,
+  ")": TokenType.CloseParen,
+
+  ";": TokenType.EndOfStatement,
+
+  "print": TokenType.Print,
+};
+
+//? Meta programming. we need to get the keys that will get compiled away
+export const orderedSymbols: [string, TokenType][] = {{META}: keys(RESERVED_SYMBOLS).map((k) => [k, RESERVED_SYMBOLS[k]])}
+	.sort((a, b) => b[0].length - a[0].length);
+
+export const DECIMAL_SEPARATOR = ".";
+
+export function tokenTypeToString(type: TokenType) {
+	//? meta programming
+  return TokenType[type];
+}
+
+
+# --------------------------------- lexer.ts --------------------------------- #
+import JSON from <JSON>;
+import { DECIMAL_SEPARATOR, orderedSymbols, Token, TokenType } from "./token";
+
+type Handler = (source: SourceData*, position: number) => Token* | null;
+
+const handlers: Handler*[] = [
+  numberHandler,
+  identifierHandler,
+  ...makeReservedSymbolsHandlers(),
+];
+
+// I think this is right, because I think that a char can't be 0, or else its end of string.
+const NO_CHAR = 0; 
+
+numberHandler(source: SourceData*, position: number) -> Token* | null : Handler => {
+  getDigits() => {
+		//? string builder
+		//? memory. this needs to be a pointer, and copied. Or we could have something nicer for patterns like this.
+    var digits = "";
+
+    var current: char;
+    while ((current = source.get(position)) != NO_CHAR) {
+      if ('0' <= current && current <= '9') {
+        digits += current;
+      } else {
+        break;
+      }
+      position++;
+    }
+    return digits;
+  }
+
+  const integerPart = getDigits();
+  var value = integerPart;
+
+  if (value.length === 0) {
+    return null;
+  }
+
+  if (source.get(position) === DECIMAL_SEPARATOR) {
+    position += DECIMAL_SEPARATOR.length();
+    value += DECIMAL_SEPARATOR;
+
+    const decimalPart = getDigits();
+    value += decimalPart;
+  }
+
+  return Token{ type: TokenType.Number, value };
+}
+
+function identifierHandler(source: SourceData*, position: number) : Handler => {
+	//? strings. this should be a string builder
+  var value = "";
+
+  var isFirst = true;
+  var current: char;
+  while ((current = source.get(position)) !== NO_CHAR) {
+    if (
+      'a' <= current && current <= 'z' ||
+      'A' <= current && current <= 'Z' ||
+      !isFirst && "0" <= current && current <= "9"
+    ) {
+      isFirst = false;
+      value += current;
+    } else {
+      break;
+    }
+    position++;
+  }
+
+  if (value.length() === 0) {
+    return null;
+  }
+
+  return Token{ type: TokenType.Identifier, value };
+}
+
+function makeReservedSymbolsHandlers(): Handler[] {
+  return orderedSymbols.map(([symbol*, type]) => (source: SourceData*, position: number) : Handler => {
+    var value: string | null = "";
+    var offset = 0;
+
+    var current: char;
+    while ((current = source.get(position + offset)) != NO_CHAR) {
+      if (current != symbol[offset]) {
+        value = null;
+        break;
+      }
+
+      offset++;
+      if (offset >= symbol.length()) {
+        value = symbol;
+        break;
+      }
+    }
+
+    if (value == null) {
+      return null;
+    }
+
+    return Token{ type, value };
+  });
+}
+
+export tokenize(rawSource: string*) -> Token[] | Error* => {
+  const source = new SourceData(rawSource);
+  var position = 0;
+
+	//? how do we do arrays? This one is dynamic.
+  const tokens: Token[] = [];
+
+  while (!source.atEOF(position)) {
+		//? we add something like that? or do we have cleaner pattern matching?
+    if ([" ", "\t", "\n", "\r"].includes(source.get(position))) {
+      position++;
+      continue;
+    }
+    // get tokens
+		//? arrays
+		//? do we optimise this? Can we? Or do we do a better system that is more explicit?
+    const tokenCandidates = handlers.map((h) => h(source, position)).filter((t) => t != null);
+
+    if (tokenCandidates.length() == 0) {
+      return new Error(`lexer error: unrecognized token (code: ${source.get(position).charCodeAt(0)}) near '${source.remainder(position)}'`);
+    }
+
+    // handle collisions
+		//? arrays
+    const token = tokenCandidates.reduce((prev, current) => selectToken(prev, current));
+    print(`Added token ${token.toString()}`);
+    tokens.push(token);
+    position += token.value.length();
+  }
+
+  return tokens;
+}
+
+
+selectToken(prev: Token*, current: Token*) -> (Token | Error)* => {
+	if (current.value.length()) {
+		return current;
+	} else if (current.value.length() < prev.value.length()) {
+		return prev;
+	} else {
+		if (current.type == TokenType.Identifier) {
+      return prev;
+    } else if (prev.type == TokenType.Identifier) {
+      return current;
+    } else {
+			//? How do we do initialisation? Memory?
+      return new Error(`lexer error: We found 2 tokens that are the same length and we couldn't choose one. Token 1: ${prev.toString()}, Token 2: ${current.toString()}`);
+    }
+	}
+}
+
+type char = int8;
+
+struct SourceData {
+	//? How do we mark mutability?
+	const source: string;
+}
+
+implement SourceData {
+	get(position: int32) -> char => {
+    if (this.atEOF(position)) {
+      return '';
+    }
+    return this.source[position];
+  }
+
+  remainder(position: number) {
+		//? Do we allow implicit access to this?
+    return source.slice(position);
+  }
+
+  atEOF(position: number) {
+    return position >= this.source.length;
+  }
+}
+
+# --------------------------------- parser.ts -------------------------------- #
+export function parseAST(tokens: Token[]) {
+  return parseProgram(new Parser(tokens));
+}
+
+struct Parser {
+	tokens: Token[];
+	position: number = 0; // default value
+	lookup: ParsingFunctionLookup! = new ParsingFunctionLookup(); //? memory. We get the ownership of this object, when the Parser is destroyed, so is that instance.
+}
+
+
+# -------------------------------- astNodes.ts ------------------------------- #
+//TODO
+//? What would be the equivalent in our language?
+type NodeShapes = {
+	[Type.Module]: { body: Statement[] };
+
+	[Type.ExpressionStatement]: { expression: Expression };
+	[Type.VariableDeclarationStatement]: { identifiers: Node<Type.IdentifierExpression>; init?: Expression };
+	[Type.PrintStatement]: { expression: Expression };
+
+	[Type.BinaryExpression]: {
+		left: Expression;
+		operator: Token; //TODO specify what token can be here
+		right: Expression;
+	};
+
+	[Type.BooleanExpression]: {
+		value: string;
+	};
+	[Type.NumberExpression]: {
+		value: string;
+	};
+	[Type.IdentifierExpression]: {
+		name: string;
+	};
+};
+
+type NodeMap = {
+	[K in keyof NodeShapes]: { type: K } & NodeShapes[K];
+};
+
+export type Node<T extends keyof NodeMap = keyof NodeMap> = NodeMap[T];
+
+export type Statement = Extract<
+	Node,
+	{
+		type:
+			| Type.ExpressionStatement
+			| Type.VariableDeclarationStatement
+			| Type.PrintStatement;
+	}
+>;
+
+export type Expression = Extract<
+	Node,
+	{
+		type:
+			| Type.BinaryExpression
+			| Type.BooleanExpression
+			| Type.NumberExpression
+			| Type.IdentifierExpression;
+	}
+>;
+
+export function createNode<T extends Node["type"]>(
+	type: T,
+	properties: NodeShapes[T],
+) {
+	return {
+		type,
+		...properties,
+	};
+}
+
+# ------------------------------- HIR-Types.ts ------------------------------- #
+//TODO how could we do them better? What feature could we leverage.

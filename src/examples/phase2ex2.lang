@@ -1,0 +1,40 @@
+var a = 5;
+var b = 6;
+var c = 7;
+
+if (true) {
+	print true;
+}
+
+if (false) {
+	print false;
+} else {
+	print true;
+}
+
+
+
+if (a > b) {
+	print b;
+} else if (a == b) {
+	print a;
+} else {
+	var a = 50;
+	var d = 21;
+
+	if (a + b != c + d) {
+		print c;
+	}
+
+	if (a < d) {
+		print d;
+	}
+}
+
+var z = 0;
+while (z <= 5) {
+	z = z + 1;
+	print z;
+}
+
+print z;

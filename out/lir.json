@@ -1,0 +1,426 @@
+{
+  "body": [
+    {
+      "type": "type",
+      "functype": {
+        "params": [
+          {
+            "id": "x",
+            "value": "i32"
+          }
+        ],
+        "results": []
+      },
+      "id": "print"
+    },
+    {
+      "type": "import",
+      "module": "env",
+      "name": "print",
+      "desc": {
+        "type": "func",
+        "typeuse": "print",
+        "id": "print"
+      }
+    },
+    {
+      "type": "start",
+      "funcidx": "main"
+    },
+    {
+      "type": "type",
+      "functype": {
+        "params": [],
+        "results": []
+      },
+      "id": "main"
+    },
+    {
+      "type": "func",
+      "id": "main",
+      "typeuse": "main",
+      "locals": [
+        {
+          "valtype": "i32",
+          "id": "a_0"
+        },
+        {
+          "valtype": "i32",
+          "id": "b_0"
+        },
+        {
+          "valtype": "i32",
+          "id": "c_0"
+        },
+        {
+          "valtype": "i32",
+          "id": "t0"
+        },
+        {
+          "valtype": "i32",
+          "id": "t1"
+        },
+        {
+          "valtype": "i32",
+          "id": "a_7"
+        },
+        {
+          "valtype": "i32",
+          "id": "d_7"
+        },
+        {
+          "valtype": "i32",
+          "id": "t2"
+        },
+        {
+          "valtype": "i32",
+          "id": "t3"
+        },
+        {
+          "valtype": "i32",
+          "id": "t4"
+        },
+        {
+          "valtype": "i32",
+          "id": "t5"
+        },
+        {
+          "valtype": "i32",
+          "id": "z_0"
+        },
+        {
+          "valtype": "i32",
+          "id": "t6"
+        }
+      ],
+      "instr": [
+        {
+          "type": "i32.const",
+          "value": 5
+        },
+        {
+          "type": "local.set",
+          "localidx": 0
+        },
+        {
+          "type": "i32.const",
+          "value": 6
+        },
+        {
+          "type": "local.set",
+          "localidx": 1
+        },
+        {
+          "type": "i32.const",
+          "value": 7
+        },
+        {
+          "type": "local.set",
+          "localidx": 2
+        },
+        {
+          "type": "i32.const",
+          "value": 1
+        },
+        {
+          "type": "if",
+          "label": "end_if_0",
+          "instr1": [
+            {
+              "type": "i32.const",
+              "value": 1
+            },
+            {
+              "type": "call",
+              "funcidx": 0
+            }
+          ]
+        },
+        {
+          "type": "i32.const",
+          "value": 0
+        },
+        {
+          "type": "if",
+          "label": "end_if_1",
+          "instr1": [
+            {
+              "type": "i32.const",
+              "value": 0
+            },
+            {
+              "type": "call",
+              "funcidx": 0
+            }
+          ],
+          "instr2": [
+            {
+              "type": "i32.const",
+              "value": 1
+            },
+            {
+              "type": "call",
+              "funcidx": 0
+            }
+          ]
+        },
+        {
+          "type": "local.get",
+          "localidx": 0
+        },
+        {
+          "type": "local.get",
+          "localidx": 1
+        },
+        {
+          "type": "i32.gt_s"
+        },
+        {
+          "type": "local.set",
+          "localidx": 3
+        },
+        {
+          "type": "local.get",
+          "localidx": 3
+        },
+        {
+          "type": "if",
+          "label": "end_if_2",
+          "instr1": [
+            {
+              "type": "local.get",
+              "localidx": 1
+            },
+            {
+              "type": "call",
+              "funcidx": 0
+            }
+          ],
+          "instr2": [
+            {
+              "type": "local.get",
+              "localidx": 0
+            },
+            {
+              "type": "local.get",
+              "localidx": 1
+            },
+            {
+              "type": "i32.eq"
+            },
+            {
+              "type": "local.set",
+              "localidx": 4
+            },
+            {
+              "type": "local.get",
+              "localidx": 4
+            },
+            {
+              "type": "if",
+              "label": "end_if_3",
+              "instr1": [
+                {
+                  "type": "local.get",
+                  "localidx": 0
+                },
+                {
+                  "type": "call",
+                  "funcidx": 0
+                }
+              ],
+              "instr2": [
+                {
+                  "type": "i32.const",
+                  "value": 50
+                },
+                {
+                  "type": "local.set",
+                  "localidx": 5
+                },
+                {
+                  "type": "i32.const",
+                  "value": 21
+                },
+                {
+                  "type": "local.set",
+                  "localidx": 6
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 5
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 1
+                },
+                {
+                  "type": "i32.add"
+                },
+                {
+                  "type": "local.set",
+                  "localidx": 7
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 2
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 6
+                },
+                {
+                  "type": "i32.add"
+                },
+                {
+                  "type": "local.set",
+                  "localidx": 8
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 7
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 8
+                },
+                {
+                  "type": "i32.ne"
+                },
+                {
+                  "type": "local.set",
+                  "localidx": 9
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 9
+                },
+                {
+                  "type": "if",
+                  "label": "end_if_4",
+                  "instr1": [
+                    {
+                      "type": "local.get",
+                      "localidx": 2
+                    },
+                    {
+                      "type": "call",
+                      "funcidx": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 5
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 6
+                },
+                {
+                  "type": "i32.lt_s"
+                },
+                {
+                  "type": "local.set",
+                  "localidx": 10
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 10
+                },
+                {
+                  "type": "if",
+                  "label": "end_if_5",
+                  "instr1": [
+                    {
+                      "type": "local.get",
+                      "localidx": 6
+                    },
+                    {
+                      "type": "call",
+                      "funcidx": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "i32.const",
+          "value": 0
+        },
+        {
+          "type": "local.set",
+          "localidx": 11
+        },
+        {
+          "type": "loop",
+          "label": "begin_loop_0",
+          "instr": [
+            {
+              "type": "local.get",
+              "localidx": 11
+            },
+            {
+              "type": "i32.const",
+              "value": 5
+            },
+            {
+              "type": "i32.le_s"
+            },
+            {
+              "type": "local.set",
+              "localidx": 12
+            },
+            {
+              "type": "local.get",
+              "localidx": 12
+            },
+            {
+              "type": "if",
+              "label": "loop_body_0",
+              "instr1": [
+                {
+                  "type": "local.get",
+                  "localidx": 11
+                },
+                {
+                  "type": "i32.const",
+                  "value": 1
+                },
+                {
+                  "type": "i32.add"
+                },
+                {
+                  "type": "local.set",
+                  "localidx": 11
+                },
+                {
+                  "type": "local.get",
+                  "localidx": 11
+                },
+                {
+                  "type": "call",
+                  "funcidx": 0
+                },
+                {
+                  "type": "br",
+                  "labelidx": "begin_loop_0"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "local.get",
+          "localidx": 11
+        },
+        {
+          "type": "call",
+          "funcidx": 0
+        }
+      ]
+    }
+  ]
+}

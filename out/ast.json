@@ -1,0 +1,306 @@
+{
+  "type": "Module",
+  "body": [
+    {
+      "type": "VariableDeclarationStatement",
+      "identifiers": {
+        "type": "IdentifierExpression",
+        "name": "a"
+      },
+      "init": {
+        "type": "NumberExpression",
+        "value": "5"
+      }
+    },
+    {
+      "type": "VariableDeclarationStatement",
+      "identifiers": {
+        "type": "IdentifierExpression",
+        "name": "b"
+      },
+      "init": {
+        "type": "NumberExpression",
+        "value": "6"
+      }
+    },
+    {
+      "type": "VariableDeclarationStatement",
+      "identifiers": {
+        "type": "IdentifierExpression",
+        "name": "c"
+      },
+      "init": {
+        "type": "NumberExpression",
+        "value": "7"
+      }
+    },
+    {
+      "type": "IfStatement",
+      "test": {
+        "type": "BooleanExpression",
+        "value": "true"
+      },
+      "consequent": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "PrintStatement",
+            "expression": {
+              "type": "BooleanExpression",
+              "value": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "IfStatement",
+      "test": {
+        "type": "BooleanExpression",
+        "value": "false"
+      },
+      "consequent": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "PrintStatement",
+            "expression": {
+              "type": "BooleanExpression",
+              "value": "false"
+            }
+          }
+        ]
+      },
+      "alternate": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "PrintStatement",
+            "expression": {
+              "type": "BooleanExpression",
+              "value": "true"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "IfStatement",
+      "test": {
+        "type": "BinaryExpression",
+        "left": {
+          "type": "IdentifierExpression",
+          "name": "a"
+        },
+        "operator": "Greater",
+        "right": {
+          "type": "IdentifierExpression",
+          "name": "b"
+        }
+      },
+      "consequent": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "PrintStatement",
+            "expression": {
+              "type": "IdentifierExpression",
+              "name": "b"
+            }
+          }
+        ]
+      },
+      "alternate": {
+        "type": "IfStatement",
+        "test": {
+          "type": "BinaryExpression",
+          "left": {
+            "type": "IdentifierExpression",
+            "name": "a"
+          },
+          "operator": "Equal",
+          "right": {
+            "type": "IdentifierExpression",
+            "name": "b"
+          }
+        },
+        "consequent": {
+          "type": "BlockStatement",
+          "body": [
+            {
+              "type": "PrintStatement",
+              "expression": {
+                "type": "IdentifierExpression",
+                "name": "a"
+              }
+            }
+          ]
+        },
+        "alternate": {
+          "type": "BlockStatement",
+          "body": [
+            {
+              "type": "VariableDeclarationStatement",
+              "identifiers": {
+                "type": "IdentifierExpression",
+                "name": "a"
+              },
+              "init": {
+                "type": "NumberExpression",
+                "value": "50"
+              }
+            },
+            {
+              "type": "VariableDeclarationStatement",
+              "identifiers": {
+                "type": "IdentifierExpression",
+                "name": "d"
+              },
+              "init": {
+                "type": "NumberExpression",
+                "value": "21"
+              }
+            },
+            {
+              "type": "IfStatement",
+              "test": {
+                "type": "BinaryExpression",
+                "left": {
+                  "type": "BinaryExpression",
+                  "left": {
+                    "type": "IdentifierExpression",
+                    "name": "a"
+                  },
+                  "operator": "Add",
+                  "right": {
+                    "type": "IdentifierExpression",
+                    "name": "b"
+                  }
+                },
+                "operator": "NotEqual",
+                "right": {
+                  "type": "BinaryExpression",
+                  "left": {
+                    "type": "IdentifierExpression",
+                    "name": "c"
+                  },
+                  "operator": "Add",
+                  "right": {
+                    "type": "IdentifierExpression",
+                    "name": "d"
+                  }
+                }
+              },
+              "consequent": {
+                "type": "BlockStatement",
+                "body": [
+                  {
+                    "type": "PrintStatement",
+                    "expression": {
+                      "type": "IdentifierExpression",
+                      "name": "c"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "IfStatement",
+              "test": {
+                "type": "BinaryExpression",
+                "left": {
+                  "type": "IdentifierExpression",
+                  "name": "a"
+                },
+                "operator": "Smaller",
+                "right": {
+                  "type": "IdentifierExpression",
+                  "name": "d"
+                }
+              },
+              "consequent": {
+                "type": "BlockStatement",
+                "body": [
+                  {
+                    "type": "PrintStatement",
+                    "expression": {
+                      "type": "IdentifierExpression",
+                      "name": "d"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "VariableDeclarationStatement",
+      "identifiers": {
+        "type": "IdentifierExpression",
+        "name": "z"
+      },
+      "init": {
+        "type": "NumberExpression",
+        "value": "0"
+      }
+    },
+    {
+      "type": "LoopStatement",
+      "test": {
+        "type": "BinaryExpression",
+        "left": {
+          "type": "IdentifierExpression",
+          "name": "z"
+        },
+        "operator": "SmallerEqual",
+        "right": {
+          "type": "NumberExpression",
+          "value": "5"
+        }
+      },
+      "body": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "ExpressionStatement",
+            "expression": {
+              "type": "AssignmentExpression",
+              "identifier": {
+                "type": "IdentifierExpression",
+                "name": "z"
+              },
+              "expression": {
+                "type": "BinaryExpression",
+                "left": {
+                  "type": "IdentifierExpression",
+                  "name": "z"
+                },
+                "operator": "Add",
+                "right": {
+                  "type": "NumberExpression",
+                  "value": "1"
+                }
+              }
+            }
+          },
+          {
+            "type": "PrintStatement",
+            "expression": {
+              "type": "IdentifierExpression",
+              "name": "z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "PrintStatement",
+      "expression": {
+        "type": "IdentifierExpression",
+        "name": "z"
+      }
+    }
+  ]
+}
