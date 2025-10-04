@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { tokenToStringJson } from "./1_lexer/token";
+import { tokenToStringJson, TokenType } from "./1_lexer/token";
 import { tokenize } from "./1_lexer/lexer";
 import { parseAST, Parser } from "./2_parser/parser";
 import { astToStringJson } from "./2_parser/astNodes";
@@ -11,11 +11,12 @@ import { hirToStringJson } from "./3_compiler/1_HIR/HIR.Types";
 import { generateHIR } from "./3_compiler/1_HIR/compiler";
 //TODO add eslint
 
-const files = ["phase1.lang", "phase1ex2.lang", "phase2.lang", "phase2ex2.lang", "phase2Typechecking.lang", "phase2block.lang", "phase2if.lang", "phase2assignment.lang"] as const;
-const fileName: typeof files[number] = "phase2ex2.lang";
-// const fileName: typeof files[number] = "phase1.lang";
+const args = process.argv.slice(2);
+var inPath = args[0];
 
-const inPath = "./src/examples/" + fileName;
+if (!inPath) {
+  throw new Error("No file selected");
+}
 const outPath = "./out/";
 
 async function main() {
@@ -25,8 +26,9 @@ async function main() {
     fs.mkdirSync(outPath);
   }
 
-  const tokens = tokenize(file);
+  let tokens = tokenize(file);
   fs.writeFileSync(outPath + "tokens.json", JSON.stringify(tokens, tokenToStringJson, 2));
+  tokens = tokens.filter((t) => t.type !== TokenType.Comment);
 
   const ast = parseAST(tokens);
   fs.writeFileSync(outPath + "ast.json", JSON.stringify(ast, astToStringJson, 2));
@@ -56,11 +58,11 @@ async function main() {
     },
   });
 
-  if (typeof instance.exports.main === "function") {
-    return instance.exports.main();
-  } else {
-    console.error("main is not a function");
-  }
+  // if (typeof instance.exports.main === "function") {
+  //   return instance.exports.main();
+  // } else {
+  //   console.error("main is not a function");
+  // }
 }
 
 void main().catch((e) => {

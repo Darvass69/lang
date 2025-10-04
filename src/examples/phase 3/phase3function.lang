@@ -1,0 +1,19 @@
+// equivalent to floor(sqrt(n))
+function floor_sqrt(n: int32) {
+	var guess = 0;
+	var result: int32;
+	
+	if (n > 0) {
+		while ((guess + 1) * (guess + 1) <= n) {
+			guess = guess + 1;
+		}
+		result = guess;
+	}
+
+	return result;
+}
+
+var n = 27;
+var res = floor_sqrt(n);
+
+print res;

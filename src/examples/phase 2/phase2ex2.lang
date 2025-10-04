@@ -38,3 +38,7 @@ while (z <= 5) {
 }
 
 print z;
+
+if (z) {
+	print 11;
+}

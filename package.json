@@ -1,7 +1,6 @@
 {
   "scripts": {
     "main": "npx ts-node src/main.ts",
-    "runtime": "npx ts-node src/runtime/runtime.ts",
     "bs": "npx ts-node typescript-bs/bs1.ts",
     "test": "jest"
   },

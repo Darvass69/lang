@@ -5,10 +5,50 @@ import { DECIMAL_SEPARATOR, orderedSymbols, TODO_LOCATION, Token, tokenToString,
 type Handler = (source: SourceData, position: number) => Token | null;
 
 const handlers: Handler[] = [
+  commentHandler,
   numberHandler,
   identifierHandler,
   ...makeReservedSymbolsHandlers(),
 ];
+
+function commentHandler(source: SourceData, position: number): Token | null {
+  // Handles comments using '//' and '/* */'
+  if (source.get(position) === "/") {
+    if (source.get(position + 1) === "/") {
+      position += 2;
+
+      let value = "//";
+      let current: string;
+      //TODO might break to "\r"
+      while ((current = source.get(position)) !== "" && current !== "\n") {
+        value += current;
+        position++;
+        continue;
+      }
+
+      return { type: TokenType.Comment, value, location: TODO_LOCATION };
+    } else if (source.get(position + 1) === "*") {
+      position += 2;
+
+      let value = "/*";
+      let current: string;
+      //TODO might break at the end of file
+      while ((current = source.get(position)) !== "") {
+        if ((current === "*" && source.get(position + 1) === "/")) {
+          value += "*/";
+          position += 2;
+          break;
+        }
+        value += current;
+        position++;
+        continue;
+      }
+
+      return { type: TokenType.Comment, value, location: TODO_LOCATION };
+    }
+  }
+  return null;
+}
 
 function numberHandler(source: SourceData, position: number): Token | null {
   function getDigits() {
@@ -54,7 +94,8 @@ function identifierHandler(source: SourceData, position: number): Token | null {
     if (
       "a" <= current && current <= "z" ||
       "A" <= current && current <= "Z" ||
-      !isFirst && "0" <= current && current <= "9"
+      !isFirst && "0" <= current && current <= "9" ||
+      current === "_"
     ) {
       isFirst = false;
       value += current;

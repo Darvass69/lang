@@ -33,7 +33,7 @@ class Context {
     if (this.variables.has(name)) {
       throw new Error(`Variable ${name} already defined`);
     }
-    const realName = `${name}_${this.id}`;
+    const realName = `${name}#${this.id}`;
     this.variables.set(name, [type, realName]);
     return realName;
   }
@@ -93,15 +93,23 @@ function resolveExpressionStatement(context: Context, node: AST.Node<AST.Type.Ex
 
 function resolveVariableDeclarationStatement(context: Context, node: AST.Node<AST.Type.VariableDeclarationStatement>): TypedAST.Node<AST.Type.VariableDeclarationStatement> {
   const init = node.init ? resolveExpression(context, node.init) : undefined;
-  let varType: TypedAST.ResolvedType;
+  const typeDef = node.typeDef ? resolveTypeDef(node.typeDef) : undefined;
 
-  if (init === undefined) {
-    varType = { type: "int32" };
+  var type: TypedAST.ResolvedType;
+  if (typeDef) {
+    if (init && !evaluateTypeEquality(typeDef, init.resolvedType)) {
+      throw new Error(
+        `HIR: variable declaration statement type mismatch.\ntypeDef: ${JSON.stringify(typeDef, hirToStringJson, 2)}\ninit: ${JSON.stringify(init, hirToStringJson, 2)}`,
+      );
+    }
+    type = typeDef;
+  } else if (init) {
+    type = init.resolvedType;
   } else {
-    varType = init.resolvedType;
+    throw new Error(`HIR: unknown type for variable declaration:\n${JSON.stringify(node, astToStringJson, 2)}`);
   }
 
-  const identifiers = resolveIdentifierExpression(context, node.identifiers, varType);
+  const identifiers = resolveIdentifierExpression(context, node.identifiers, type);
 
   return TypedAST.createNode(
     AST.Type.VariableDeclarationStatement,
@@ -173,9 +181,9 @@ function resolveAssignmentExpression(context: Context, node: AST.Node<AST.Type.A
   const identifier = resolveIdentifierExpression(context, node.identifier);
   const expression = resolveExpression(context, node.expression);
 
-  if (identifier.resolvedType.type !== expression.resolvedType.type) {
+  if (!evaluateTypeEquality(identifier.resolvedType, expression.resolvedType)) {
     throw new Error(
-      `HIR: assignment expression type mismatch.\nidentifier:\n${JSON.stringify(identifier, hirToStringJson, 2)}\nexpression:\n${JSON.stringify(expression, hirToStringJson, 2)}`,
+      `HIR: assignment expression type mismatch.\nidentifier: ${JSON.stringify(identifier, hirToStringJson, 2)}\nexpression: ${JSON.stringify(expression, hirToStringJson, 2)}`,
     );
   }
 
@@ -193,9 +201,9 @@ function resolveBinaryExpression(context: Context, node: AST.Node<AST.Type.Binar
   const left = resolveExpression(context, node.left);
   const right = resolveExpression(context, node.right);
 
-  if (left.resolvedType.type !== right.resolvedType.type) {
+  if (!evaluateTypeEquality(left.resolvedType, right.resolvedType)) {
     throw new Error(
-      `HIR: binary expression type mismatch.\nleft:\n${JSON.stringify(left, hirToStringJson, 2)}\nright:\n${JSON.stringify(right, hirToStringJson, 2)}`,
+      `HIR: binary expression type mismatch.\nleft: ${JSON.stringify(left, hirToStringJson, 2)}\nright: ${JSON.stringify(right, hirToStringJson, 2)}`,
     );
   }
 
@@ -265,4 +273,22 @@ function resolveIdentifierExpression(
       resolvedType: type,
     },
   );
+}
+
+function resolveTypeDef(typeDef: AST.Node<AST.Type.IdentifierExpression>): TypedAST.ResolvedType {
+  if (typeDef.name === "int32") {
+    return { type: "int32" };
+  } else if (typeDef.name === "bool") {
+    return { type: "bool" };
+  }
+
+  throw new Error(`HIR: type not supported: ${typeDef.name}`);
+}
+
+function evaluateTypeEquality(type1: TypedAST.ResolvedType, type2: TypedAST.ResolvedType) {
+  if (type1.type === type2.type) {
+    return true;
+  }
+
+  return false;
 }

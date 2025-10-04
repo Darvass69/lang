@@ -1,0 +1,19 @@
+// equivalent to floor(sqrt(n))
+
+var n: bool = 27;
+var _guess = 0;
+var result: int32;
+
+/* This
+is just a test for a comment
+	* I want to know if it works
+That's it*/
+
+if (n > 0) {
+	while ((_guess + 1) * (_guess + 1) <= n) {
+		_guess = _guess + 1;
+	}
+	result = _guess;
+}
+
+print result;

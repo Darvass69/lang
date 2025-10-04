@@ -1,53 +1,14 @@
 $entry:
-  a_0 = 5
-  b_0 = 6
-  c_0 = 7
-  if 1 goto $consequent_0 else $end_if_0
+  n#0 = 27
+  _guess#0 = 0
+  t0 = n#0 > 0 (i32)
+  if t0 goto $consequent_0 else $end_if_0
 $consequent_0:
-  print 1
-  goto $end_if_0
-$end_if_0:
-  if 0 goto $consequent_1 else $alternate_1
-$consequent_1:
-  print 0
-  goto $end_if_1
-$end_if_1:
-  t0 = a_0 > b_0 (i32)
-  if t0 goto $consequent_2 else $alternate_2
-$consequent_2:
-  print b_0
-  goto $end_if_2
-$end_if_2:
-  z_0 = 0
   goto $begin_loop_0
 $begin_loop_0:
-  t6 = z_0 <= 5 (i32)
-$alternate_2:
-  t1 = a_0 == b_0 (i32)
-  if t1 goto $consequent_3 else $alternate_3
-$consequent_3:
-  print a_0
-  goto $end_if_3
-$end_if_3:
-  goto $end_if_2
-$alternate_3:
-  a_7 = 50
-  d_7 = 21
-  t2 = a_7 + b_0 (i32)
-  t3 = c_0 + d_7 (i32)
-  t4 = t2 != t3 (i32)
-  if t4 goto $consequent_4 else $end_if_4
-$consequent_4:
-  print c_0
-  goto $end_if_4
-$end_if_4:
-  t5 = a_7 < d_7 (i32)
-  if t5 goto $consequent_5 else $end_if_5
-$consequent_5:
-  print d_7
-  goto $end_if_5
-$end_if_5:
-  goto $end_if_3
-$alternate_1:
-  print 1
-  goto $end_if_1
+  t1 = _guess#0 + 1 (i32)
+  t2 = _guess#0 + 1 (i32)
+  t3 = t1 * t2 (i32)
+  t4 = t3 <= n#0 (i32)
+$end_if_0:
+  print result#0

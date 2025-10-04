@@ -36,6 +36,12 @@ export function parseVariableDeclarationStatement(p: Parser) {
 
   const identifier = AST.createNode(AST.Type.IdentifierExpression, { name: p.expect(TokenType.Identifier).value });
 
+  let typeDef: AST.Node<AST.Type.IdentifierExpression> | undefined;
+  if (p.peek().type === TokenType.Colon) {
+    p.expect(TokenType.Colon);
+    typeDef = AST.createNode(AST.Type.IdentifierExpression, { name: p.expect(TokenType.Identifier).value });
+  }
+
   let init: AST.Expression | undefined;
   if (p.peek().type !== TokenType.EndOfStatement) {
     p.expect(TokenType.Assignment);
@@ -44,7 +50,7 @@ export function parseVariableDeclarationStatement(p: Parser) {
 
   p.expect(TokenType.EndOfStatement);
 
-  return AST.createNode(AST.Type.VariableDeclarationStatement, { identifiers: identifier, init });
+  return AST.createNode(AST.Type.VariableDeclarationStatement, { identifiers: identifier, typeDef, init });
 }
 
 export function parseBlockStatement(p: Parser) {
@@ -68,7 +74,7 @@ export function parseIfStatement(p: Parser): AST.Node<AST.Type.IfStatement> {
   const consequent = parseBlockStatement(p);
 
   let alternate: AST.Node<AST.Type.IfStatement | AST.Type.BlockStatement> | undefined = undefined;
-  if (p.peek().type === TokenType.Else) {
+  if (p.peek()?.type === TokenType.Else) {
     p.eat();
 
     if (p.peek().type === TokenType.If) {

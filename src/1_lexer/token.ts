@@ -56,18 +56,19 @@ export enum TokenType {
   // Continue, // continue
 
   //~ Punctuation
-  // Colon, // :
+  Colon, // :
 
   //~ Block
   OpenCurly, // {
   CloseCurly, // }
 
   //~ Grouping
-  OpenParen,
-  CloseParen,
+  OpenParen, // ()
+  CloseParen, // )
 
   //~
   EndOfStatement, // ;
+  Comment, // '//' until new line or '/*' until '*/'
 
   //~ Temp
   Print, // print
@@ -112,6 +113,8 @@ const RESERVED_SYMBOLS = {
   "if": TokenType.If,
   "else": TokenType.Else,
   "while": TokenType.While,
+
+  ":": TokenType.Colon,
 
   "{": TokenType.OpenCurly,
   "}": TokenType.CloseCurly,

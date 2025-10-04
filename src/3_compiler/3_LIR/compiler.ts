@@ -26,21 +26,21 @@ export function generateLIR(MIR: MIR): module {
 
   body.push({
     type: "start",
-    funcidx: "main",
+    funcidx: "start",
   });
 
   body.push({
     type: "type",
     functype: { params: [], results: [] },
-    id: "main",
+    id: "start",
   });
 
   const locals: local[] = [];
   const instructions = generateMIR(MIR, locals);
   body.push({
     type: "func",
-    id: "main",
-    typeuse: "main",
+    id: "start",
+    typeuse: "start",
     locals: locals,
     instr: instructions,
   });

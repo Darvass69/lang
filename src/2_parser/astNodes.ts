@@ -27,7 +27,7 @@ export namespace AST {
     [Type.Module]: { body: Statement[] };
 
     [Type.ExpressionStatement]: { expression: Expression };
-    [Type.VariableDeclarationStatement]: { identifiers: Node<Type.IdentifierExpression>; init?: Expression };
+    [Type.VariableDeclarationStatement]: { identifiers: Node<Type.IdentifierExpression>; typeDef?: Node<Type.IdentifierExpression>; init?: Expression };
     [Type.BlockStatement]: { body: Statement[] };
     [Type.IfStatement]: { test: Expression; consequent: Node<Type.BlockStatement>; alternate?: Node<Type.IfStatement | Type.BlockStatement> };
     [Type.LoopStatement]: { /*init?: Statement[];*/ test: Expression; /*update?: Expression;*/ body: Node<Type.BlockStatement> }; //TODO init, how do we split statements?
