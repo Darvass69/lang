@@ -3,8 +3,16 @@ import { TokenType } from "../../1_lexer/token";
 import { AST } from "../astNodes";
 import { BindingPower } from "../bindingPower";
 import { Parser } from "../parser";
-import { parseAssignmentExpression, parseBinaryExpression, parseGroupingExpression, parsePrimaryExpression } from "./expression";
-import { parseBlockStatement, parseIfStatement, parsePrintStatement, parseVariableDeclarationStatement, parseWhileStatement } from "./statement";
+import { parseAssignmentExpression, parseBinaryExpression, parseFunctionCallExpression, parseGroupingExpression, parsePrimaryExpression } from "./expression";
+import {
+  parseBlockStatement,
+  parseFunctionDeclarationStatement,
+  parseIfStatement,
+  parsePrintStatement,
+  parseReturnStatement,
+  parseVariableDeclarationStatement,
+  parseWhileStatement,
+} from "./statement";
 
 export type StmtHandler = (parser: Parser) => AST.Statement;
 export type NudHandler = ((parser: Parser) => AST.Expression) & { bp: number };
@@ -59,6 +67,9 @@ export default class ParsingFunctionLookup {
     //~ Assignment
     this.addLed(TokenType.Assignment, BindingPower.assignment, parseAssignmentExpression);
 
+    //~ Function call
+    this.addLed(TokenType.OpenParen, BindingPower.access_call_new, parseFunctionCallExpression);
+
     //~ Statement
 
     //* Variable declaration
@@ -70,6 +81,10 @@ export default class ParsingFunctionLookup {
     //* Control flow
     this.addStmt(TokenType.If, parseIfStatement);
     this.addStmt(TokenType.While, parseWhileStatement);
+
+    //* Function
+    this.addStmt(TokenType.Function, parseFunctionDeclarationStatement);
+    this.addStmt(TokenType.Return, parseReturnStatement);
 
     //* Other
     this.addStmt(TokenType.Print, parsePrintStatement);

@@ -1,5 +1,5 @@
 // equivalent to floor(sqrt(n))
-function floor_sqrt(n: int32) {
+function floor_sqrt(n: int32): int32 {
 	var guess = 0;
 	var result: int32;
 	
@@ -17,3 +17,10 @@ var n = 27;
 var res = floor_sqrt(n);
 
 print res;
+
+function do_nothing() {
+	print 1;
+	return;
+}
+
+do_nothing();

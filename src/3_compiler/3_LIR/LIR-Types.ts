@@ -35,8 +35,8 @@ export type valtype = numtype | vectype | reftype;
 
 // Function Types
 export type functype = { params: param[]; results: result[] };
-type param = { id: id; value: valtype };
-type result = valtype;
+export type param = { id: id; value: valtype };
+export type result = valtype;
 
 // Limits
 // type limits = { type: "limits"; min: number; max?: number };
@@ -70,7 +70,7 @@ type plaininstr =
   // | { type: "nop" }
   | { type: "br"; labelidx: labelidx }
   // | { type: "br_if"; labelidx: labelidx }
-  // | { type: "return" }
+  | { type: "return" }
   | { type: "call"; funcidx: funcidx }
   // | { type: "call_indirect"; x: tableidx; y: typeuse }
   // Reference Instructions

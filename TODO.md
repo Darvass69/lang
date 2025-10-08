@@ -44,26 +44,24 @@
 		- [x] Add type definition to variable declaration statement
 	- [x] HIR
 	 - [x] Check type definition when declaring a variable, then infer. If no inference and no type declaration, error.
-- [ ] functions
+- [x] functions
 	+ Only at the top level of a file. If we find one inside a context (if, other function, etc) we may or may not make errors (its not worth trying to handle those edge cases because we will change that behavior later anyway).
 	+ We might need to do hoisting like JS or declaration like in C. But that will be later.
-	- [ ] tokens
-		- [ ] Add `function` token
-		- [ ] Add `return` token
-	- [ ] AST
-		- [ ] parse function declaration statement.
-		- [ ] parse the parameters and their type definition
-		- [ ] parse return statement
-		- [ ] parse function call
-	- [ ] HIR
-		- [ ] should be pretty simple. Just handle the new AST nodes.
-		- [ ] typ check the return statement
-	- [ ] MIR
-		- [ ] Quite complex. We need to separate the function definition from the rest of the statements in the file.
-		- [ ] Then, we handle the statements of the file and the contents of the functions (we might need to handle some context here if we allow to use global variables in the functions)
-	- [ ] LIR
-		- [ ] find all the function declarations and create the functions.
-		- [ ] ...
+	- [x] tokens
+		- [x] Add `function` token
+		- [x] Add `return` token
+	- [x] AST
+		- [x] parse function declaration statement.
+		- [x] parse the parameters and their type definition
+		- [x] parse return statement
+		- [x] parse function call
+	- [x] HIR
+		- [x] should be pretty simple. Just handle the new AST nodes.
+		- [x] type check the return statement
+	- [x] MIR
+		- [x] Quite complex. We need to separate the function definition from the rest of the statements in the file.
+		- [x] Then, we handle the statements of the file and the contents of the functions (we might need to handle some context here if we allow to use global variables in the functions)
+	- [x] LIR
 - [ ] simple import/export
 	+ just add a simple way to import/export functions through WASM
 	+ `import function add(x: int32, y: bool) {};`

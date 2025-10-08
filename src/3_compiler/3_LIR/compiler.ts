@@ -1,6 +1,6 @@
 import { Binop } from "../1_HIR/HIR.Types";
-import { Block, Instruction, MIR, Operand } from "../2_MIR/MIR-Types";
-import { blockinstr, instr, local, module, modulefield } from "./LIR-Types";
+import { Block, Function, Instruction, Module, Operand, Param, Terminator } from "../2_MIR/MIR-Types";
+import { _type, blockinstr, func, instr, local, module, modulefield, param, result } from "./LIR-Types";
 
 // TODO handle names/indexes better. We want to be able to easily generate the LIR, so we should be able to use names and then resolve them to indexes later when we emit the WASM.
 
@@ -8,9 +8,10 @@ import { blockinstr, instr, local, module, modulefield } from "./LIR-Types";
 
 const IDX_PRINT = 0;
 
-export function generateLIR(MIR: MIR): module {
+export function generateLIR(MIR: Module): module {
   const body: modulefield[] = [];
 
+  /* ------------------------------ Import print ------------------------------ */
   body.push({
     type: "type",
     functype: { params: [{ id: "x", value: "i32" }], results: [] },
@@ -24,35 +25,59 @@ export function generateLIR(MIR: MIR): module {
     desc: { type: "func", typeuse: "print", id: "print" },
   });
 
+  /* --------------------------------- Program -------------------------------- */
   body.push({
     type: "start",
     funcidx: "start",
   });
 
-  body.push({
-    type: "type",
-    functype: { params: [], results: [] },
-    id: "start",
-  });
-
-  const locals: local[] = [];
-  const instructions = generateMIR(MIR, locals);
-  body.push({
-    type: "func",
-    id: "start",
-    typeuse: "start",
-    locals: locals,
-    instr: instructions,
-  });
+  MIR.functions.forEach((fn) => body.push(...generateFunction(fn)));
 
   return { body };
 }
 
-function generateMIR(mir: MIR, locals: local[]) {
-  return generateBlock(mir.entry, locals);
+function generateFunction(fn: Function): modulefield[] {
+  const locals: local[] = [];
+
+  const _type: _type = {
+    type: "type",
+    id: fn.name,
+    functype: {
+      params: generateParamTypes(fn.params),
+      results: generateReturnType(fn.returnType),
+    },
+  };
+
+  fn.params.forEach((param) => addLocal(param.name, locals));
+  const instructions = generateBlock(fn.entry, locals);
+
+  const _func: func = {
+    type: "func",
+    id: fn.name,
+    typeuse: fn.name,
+    locals: locals,
+    instr: instructions,
+  };
+
+  return [_type, _func];
 }
 
-const visitedBlocks = new Set<Block>();
+function generateParamTypes(params: Param[]): param[] {
+  return params.map((param) => ({ id: param.name, value: param.type }));
+}
+
+function generateReturnType(returnType: Function["returnType"]): result[] {
+  switch (returnType) {
+    case "i32":
+    case "i64":
+    case "f32":
+    case "f64":
+      return [returnType];
+    case "void":
+      return [];
+  }
+}
+
 function generateBlock(block: Block, locals: local[], ifJoin?: Block, loopHeader?: Block): instr[] {
   const instructions = generateInstructions(block.instructions, locals);
 
@@ -91,7 +116,7 @@ function generateBlock(block: Block, locals: local[], ifJoin?: Block, loopHeader
         ...instructions,
         ...generateBlock(block.terminator.join, locals, ifJoin, loopHeader),
       ];
-    } else {
+    } else if (block.terminator.type === "loop") {
       //TODO handle break and continue (right now, if we are in an if we are not stopping at the loop end block and that is a problem for break and continue)
       const body = generateBlock(block.terminator.body, locals, undefined, block); //! Make a br for the end block
 
@@ -103,6 +128,12 @@ function generateBlock(block: Block, locals: local[], ifJoin?: Block, loopHeader
         { type: "loop", label: block.name, instr: instructions },
         ...generateBlock(block.terminator.end, locals, ifJoin, loopHeader),
       ];
+    } else if (block.terminator.type === "return") {
+      if (block.terminator.value) instructions.push(resolveOperand(block.terminator.value, locals));
+      instructions.push({ type: "return" });
+      return instructions;
+    } else {
+      throw `LIR: terminator not supported: ${(block.terminator as Terminator).type}`;
     }
   } else {
     return generateInstructions(block.instructions, locals);
@@ -120,6 +151,12 @@ function generateInstructions(instructions: Instruction[], locals: local[]): ins
           break;
         case "binop":
           result.push(...generateBinopInstruction(instruction, locals));
+          break;
+        case "push_param":
+          result.push(...generatePushParamInstruction(instruction, locals));
+          break;
+        case "call":
+          result.push(...generateCallInstruction(instruction, locals));
           break;
         case "print":
           result.push(...generatePrintInstruction(instruction, locals));
@@ -165,6 +202,34 @@ function generateBinopInstruction(instruction: Instruction & { type: "binop" }, 
   return result;
 }
 
+function generatePushParamInstruction(instruction: Instruction & { type: "push_param" }, locals: local[]): instr[] {
+  const result: instr[] = [];
+
+  result.push(resolveOperand(instruction.operand, locals));
+
+  return result;
+}
+
+function generateCallInstruction(instruction: Instruction & { type: "call" }, locals: local[]): instr[] {
+  const result: instr[] = [];
+
+  result.push({
+    type: "call",
+    funcidx: instruction.callee,
+  });
+
+  if (instruction.dst) {
+    const dstIdx = addLocal(instruction.dst.name, locals);
+
+    result.push({
+      type: "local.set",
+      localidx: dstIdx,
+    });
+  }
+
+  return result;
+}
+
 function generatePrintInstruction(instruction: Instruction & { type: "print" }, locals: local[]): instr[] {
   const result: instr[] = [];
 
@@ -194,6 +259,7 @@ function resolveOperand(operand: Operand, locals: local[]): instr {
 
 /* --------------------------------- Helpers -------------------------------- */
 
+//! I Don't think we need this here. We are already resolving the names in the WASM emitter, so I think this isn't needed.
 function addLocal(name: string, locals: local[]) {
   if (findIdxLocal(name, locals) !== -1) {
     return findIdxLocal(name, locals);

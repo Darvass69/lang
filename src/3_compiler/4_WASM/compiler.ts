@@ -107,7 +107,9 @@ function generateFunctionSection(funcs: func[]): [funcSection: Uint8Array, codeS
 
   funcs.map((func) => {
     saveFunction(func.id);
+  });
 
+  funcs.map((func) => {
     const code = encodeCode(
       generateLocals(func.locals),
       generateCode(func.instr, []),
@@ -164,6 +166,9 @@ function generateCode(instr: instr[], labelPath: string[]): Uint8Array {
           generateCode(i.instr, labelPath),
           Uint8Array.of(OpCodes.end),
         );
+      }
+      case "return": {
+        return Uint8Array.of(OpCodes.return);
       }
       case "local.get": {
         return concatBuffer(Uint8Array.of(OpCodes.local_get), resolveLocalidx(i.localidx));

@@ -29,11 +29,11 @@
     },
     {
       "type": "type",
+      "id": "start",
       "functype": {
         "params": [],
         "results": []
-      },
-      "id": "start"
+      }
     },
     {
       "type": "func",
@@ -46,7 +46,98 @@
         },
         {
           "valtype": "i32",
-          "id": "_guess#0"
+          "id": "res#0"
+        }
+      ],
+      "instr": [
+        {
+          "type": "i32.const",
+          "value": 27
+        },
+        {
+          "type": "local.set",
+          "localidx": 0
+        },
+        {
+          "type": "local.get",
+          "localidx": 0
+        },
+        {
+          "type": "call",
+          "funcidx": "floor_sqrt#0"
+        },
+        {
+          "type": "local.set",
+          "localidx": 1
+        },
+        {
+          "type": "local.get",
+          "localidx": 1
+        },
+        {
+          "type": "call",
+          "funcidx": 0
+        },
+        {
+          "type": "call",
+          "funcidx": "do_nothing#0"
+        }
+      ]
+    },
+    {
+      "type": "type",
+      "id": "do_nothing#0",
+      "functype": {
+        "params": [],
+        "results": []
+      }
+    },
+    {
+      "type": "func",
+      "id": "do_nothing#0",
+      "typeuse": "do_nothing#0",
+      "locals": [],
+      "instr": [
+        {
+          "type": "i32.const",
+          "value": 1
+        },
+        {
+          "type": "call",
+          "funcidx": 0
+        },
+        {
+          "type": "return"
+        }
+      ]
+    },
+    {
+      "type": "type",
+      "id": "floor_sqrt#0",
+      "functype": {
+        "params": [
+          {
+            "id": "n#1",
+            "value": "i32"
+          }
+        ],
+        "results": [
+          "i32"
+        ]
+      }
+    },
+    {
+      "type": "func",
+      "id": "floor_sqrt#0",
+      "typeuse": "floor_sqrt#0",
+      "locals": [
+        {
+          "valtype": "i32",
+          "id": "n#1"
+        },
+        {
+          "valtype": "i32",
+          "id": "guess#1"
         },
         {
           "valtype": "i32",
@@ -70,18 +161,10 @@
         },
         {
           "valtype": "i32",
-          "id": "result#0"
+          "id": "result#1"
         }
       ],
       "instr": [
-        {
-          "type": "i32.const",
-          "value": 27
-        },
-        {
-          "type": "local.set",
-          "localidx": 0
-        },
         {
           "type": "i32.const",
           "value": 0
@@ -223,8 +306,7 @@
           "localidx": 7
         },
         {
-          "type": "call",
-          "funcidx": 0
+          "type": "return"
         }
       ]
     }

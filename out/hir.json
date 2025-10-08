@@ -2,6 +2,218 @@
   "type": "Module",
   "body": [
     {
+      "type": "FunctionDeclarationStatement",
+      "name": "floor_sqrt#0",
+      "params": [
+        {
+          "type": "IdentifierExpression",
+          "name": "n#1",
+          "resolvedType": {
+            "type": "int32"
+          }
+        }
+      ],
+      "returnType": {
+        "type": "int32"
+      },
+      "body": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "VariableDeclarationStatement",
+            "identifiers": {
+              "type": "IdentifierExpression",
+              "name": "guess#1",
+              "resolvedType": {
+                "type": "int32"
+              }
+            },
+            "init": {
+              "type": "NumberExpression",
+              "value": "0",
+              "resolvedType": {
+                "type": "int32"
+              }
+            }
+          },
+          {
+            "type": "VariableDeclarationStatement",
+            "identifiers": {
+              "type": "IdentifierExpression",
+              "name": "result#1",
+              "resolvedType": {
+                "type": "int32"
+              }
+            }
+          },
+          {
+            "type": "IfStatement",
+            "test": {
+              "type": "BinaryExpression",
+              "left": {
+                "type": "IdentifierExpression",
+                "name": "n#1",
+                "resolvedType": {
+                  "type": "int32"
+                }
+              },
+              "right": {
+                "type": "NumberExpression",
+                "value": "0",
+                "resolvedType": {
+                  "type": "int32"
+                }
+              },
+              "resolvedType": {
+                "type": "bool"
+              }
+            },
+            "consequent": {
+              "type": "BlockStatement",
+              "body": [
+                {
+                  "type": "LoopStatement",
+                  "test": {
+                    "type": "BinaryExpression",
+                    "left": {
+                      "type": "BinaryExpression",
+                      "left": {
+                        "type": "BinaryExpression",
+                        "left": {
+                          "type": "IdentifierExpression",
+                          "name": "guess#1",
+                          "resolvedType": {
+                            "type": "int32"
+                          }
+                        },
+                        "right": {
+                          "type": "NumberExpression",
+                          "value": "1",
+                          "resolvedType": {
+                            "type": "int32"
+                          }
+                        },
+                        "resolvedType": {
+                          "type": "int32"
+                        }
+                      },
+                      "right": {
+                        "type": "BinaryExpression",
+                        "left": {
+                          "type": "IdentifierExpression",
+                          "name": "guess#1",
+                          "resolvedType": {
+                            "type": "int32"
+                          }
+                        },
+                        "right": {
+                          "type": "NumberExpression",
+                          "value": "1",
+                          "resolvedType": {
+                            "type": "int32"
+                          }
+                        },
+                        "resolvedType": {
+                          "type": "int32"
+                        }
+                      },
+                      "resolvedType": {
+                        "type": "int32"
+                      }
+                    },
+                    "right": {
+                      "type": "IdentifierExpression",
+                      "name": "n#1",
+                      "resolvedType": {
+                        "type": "int32"
+                      }
+                    },
+                    "resolvedType": {
+                      "type": "bool"
+                    }
+                  },
+                  "body": {
+                    "type": "BlockStatement",
+                    "body": [
+                      {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                          "type": "AssignmentExpression",
+                          "identifier": {
+                            "type": "IdentifierExpression",
+                            "name": "guess#1",
+                            "resolvedType": {
+                              "type": "int32"
+                            }
+                          },
+                          "expression": {
+                            "type": "BinaryExpression",
+                            "left": {
+                              "type": "IdentifierExpression",
+                              "name": "guess#1",
+                              "resolvedType": {
+                                "type": "int32"
+                              }
+                            },
+                            "right": {
+                              "type": "NumberExpression",
+                              "value": "1",
+                              "resolvedType": {
+                                "type": "int32"
+                              }
+                            },
+                            "resolvedType": {
+                              "type": "int32"
+                            }
+                          },
+                          "resolvedType": {
+                            "type": "int32"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ExpressionStatement",
+                  "expression": {
+                    "type": "AssignmentExpression",
+                    "identifier": {
+                      "type": "IdentifierExpression",
+                      "name": "result#1",
+                      "resolvedType": {
+                        "type": "int32"
+                      }
+                    },
+                    "expression": {
+                      "type": "IdentifierExpression",
+                      "name": "guess#1",
+                      "resolvedType": {
+                        "type": "int32"
+                      }
+                    },
+                    "resolvedType": {
+                      "type": "int32"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "ReturnStatement",
+            "expression": {
+              "type": "IdentifierExpression",
+              "name": "result#1",
+              "resolvedType": {
+                "type": "int32"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "type": "VariableDeclarationStatement",
       "identifiers": {
         "type": "IdentifierExpression",
@@ -22,190 +234,72 @@
       "type": "VariableDeclarationStatement",
       "identifiers": {
         "type": "IdentifierExpression",
-        "name": "_guess#0",
+        "name": "res#0",
         "resolvedType": {
           "type": "int32"
         }
       },
       "init": {
-        "type": "NumberExpression",
-        "value": "0",
+        "type": "FunctionCallExpression",
+        "callee": "floor_sqrt#0",
+        "args": [
+          {
+            "type": "IdentifierExpression",
+            "name": "n#0",
+            "resolvedType": {
+              "type": "int32"
+            }
+          }
+        ],
         "resolvedType": {
           "type": "int32"
         }
-      }
-    },
-    {
-      "type": "VariableDeclarationStatement",
-      "identifiers": {
-        "type": "IdentifierExpression",
-        "name": "result#0",
-        "resolvedType": {
-          "type": "int32"
-        }
-      }
-    },
-    {
-      "type": "IfStatement",
-      "test": {
-        "type": "BinaryExpression",
-        "left": {
-          "type": "IdentifierExpression",
-          "name": "n#0",
-          "resolvedType": {
-            "type": "int32"
-          }
-        },
-        "right": {
-          "type": "NumberExpression",
-          "value": "0",
-          "resolvedType": {
-            "type": "int32"
-          }
-        },
-        "resolvedType": {
-          "type": "bool"
-        }
-      },
-      "consequent": {
-        "type": "BlockStatement",
-        "body": [
-          {
-            "type": "LoopStatement",
-            "test": {
-              "type": "BinaryExpression",
-              "left": {
-                "type": "BinaryExpression",
-                "left": {
-                  "type": "BinaryExpression",
-                  "left": {
-                    "type": "IdentifierExpression",
-                    "name": "_guess#0",
-                    "resolvedType": {
-                      "type": "int32"
-                    }
-                  },
-                  "right": {
-                    "type": "NumberExpression",
-                    "value": "1",
-                    "resolvedType": {
-                      "type": "int32"
-                    }
-                  },
-                  "resolvedType": {
-                    "type": "int32"
-                  }
-                },
-                "right": {
-                  "type": "BinaryExpression",
-                  "left": {
-                    "type": "IdentifierExpression",
-                    "name": "_guess#0",
-                    "resolvedType": {
-                      "type": "int32"
-                    }
-                  },
-                  "right": {
-                    "type": "NumberExpression",
-                    "value": "1",
-                    "resolvedType": {
-                      "type": "int32"
-                    }
-                  },
-                  "resolvedType": {
-                    "type": "int32"
-                  }
-                },
-                "resolvedType": {
-                  "type": "int32"
-                }
-              },
-              "right": {
-                "type": "IdentifierExpression",
-                "name": "n#0",
-                "resolvedType": {
-                  "type": "int32"
-                }
-              },
-              "resolvedType": {
-                "type": "bool"
-              }
-            },
-            "body": {
-              "type": "BlockStatement",
-              "body": [
-                {
-                  "type": "ExpressionStatement",
-                  "expression": {
-                    "type": "AssignmentExpression",
-                    "identifier": {
-                      "type": "IdentifierExpression",
-                      "name": "_guess#0",
-                      "resolvedType": {
-                        "type": "int32"
-                      }
-                    },
-                    "expression": {
-                      "type": "BinaryExpression",
-                      "left": {
-                        "type": "IdentifierExpression",
-                        "name": "_guess#0",
-                        "resolvedType": {
-                          "type": "int32"
-                        }
-                      },
-                      "right": {
-                        "type": "NumberExpression",
-                        "value": "1",
-                        "resolvedType": {
-                          "type": "int32"
-                        }
-                      },
-                      "resolvedType": {
-                        "type": "int32"
-                      }
-                    },
-                    "resolvedType": {
-                      "type": "int32"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "type": "ExpressionStatement",
-            "expression": {
-              "type": "AssignmentExpression",
-              "identifier": {
-                "type": "IdentifierExpression",
-                "name": "result#0",
-                "resolvedType": {
-                  "type": "int32"
-                }
-              },
-              "expression": {
-                "type": "IdentifierExpression",
-                "name": "_guess#0",
-                "resolvedType": {
-                  "type": "int32"
-                }
-              },
-              "resolvedType": {
-                "type": "int32"
-              }
-            }
-          }
-        ]
       }
     },
     {
       "type": "PrintStatement",
       "expression": {
         "type": "IdentifierExpression",
-        "name": "result#0",
+        "name": "res#0",
         "resolvedType": {
           "type": "int32"
+        }
+      }
+    },
+    {
+      "type": "FunctionDeclarationStatement",
+      "name": "do_nothing#0",
+      "params": [],
+      "returnType": {
+        "type": "void"
+      },
+      "body": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "PrintStatement",
+            "expression": {
+              "type": "NumberExpression",
+              "value": "1",
+              "resolvedType": {
+                "type": "int32"
+              }
+            }
+          },
+          {
+            "type": "ReturnStatement"
+          }
+        ]
+      }
+    },
+    {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "FunctionCallExpression",
+        "callee": "do_nothing#0",
+        "args": [],
+        "resolvedType": {
+          "type": "void"
         }
       }
     }

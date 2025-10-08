@@ -1,212 +1,335 @@
 {
-  "blocks": [
+  "start": {
+    "name": "start",
+    "params": [],
+    "returnType": "void",
+    "blocks": [
+      {
+        "name": "entry",
+        "instructions": [
+          {
+            "type": "assign",
+            "dst": {
+              "type": "variable",
+              "name": "n#0"
+            },
+            "value": {
+              "type": "value",
+              "value": 27
+            }
+          },
+          {
+            "type": "push_param",
+            "operand": {
+              "type": "variable",
+              "name": "n#0"
+            }
+          },
+          {
+            "type": "call",
+            "dst": {
+              "type": "variable",
+              "name": "res#0"
+            },
+            "callee": "floor_sqrt#0",
+            "nbArgs": 1
+          },
+          {
+            "type": "print",
+            "value": {
+              "type": "variable",
+              "name": "res#0"
+            }
+          },
+          {
+            "type": "call",
+            "callee": "do_nothing#0",
+            "nbArgs": 0
+          }
+        ]
+      }
+    ]
+  },
+  "functions": [
     {
-      "name": "entry",
-      "instructions": [
+      "name": "start",
+      "params": [],
+      "returnType": "void",
+      "blocks": [
         {
-          "type": "assign",
-          "dst": {
-            "type": "variable",
-            "name": "n#0"
-          },
-          "value": {
-            "type": "value",
-            "value": 27
-          }
-        },
-        {
-          "type": "assign",
-          "dst": {
-            "type": "variable",
-            "name": "_guess#0"
-          },
-          "value": {
-            "type": "value",
-            "value": 0
-          }
-        },
-        {
-          "type": "binop",
-          "dst": {
-            "type": "variable",
-            "name": "t0"
-          },
-          "operator": "Greater",
-          "left": {
-            "type": "variable",
-            "name": "n#0"
-          },
-          "right": {
-            "type": "value",
-            "value": 0
-          },
-          "operandType": "i32"
-        }
-      ],
-      "terminator": {
-        "type": "ifgoto",
-        "test": {
-          "type": "variable",
-          "name": "t0"
-        },
-        "consequent": "consequent_0",
-        "alternate": "end_if_0",
-        "join": {
-          "name": "end_if_0",
+          "name": "entry",
           "instructions": [
+            {
+              "type": "assign",
+              "dst": {
+                "type": "variable",
+                "name": "n#0"
+              },
+              "value": {
+                "type": "value",
+                "value": 27
+              }
+            },
+            {
+              "type": "push_param",
+              "operand": {
+                "type": "variable",
+                "name": "n#0"
+              }
+            },
+            {
+              "type": "call",
+              "dst": {
+                "type": "variable",
+                "name": "res#0"
+              },
+              "callee": "floor_sqrt#0",
+              "nbArgs": 1
+            },
             {
               "type": "print",
               "value": {
                 "type": "variable",
-                "name": "result#0"
+                "name": "res#0"
               }
+            },
+            {
+              "type": "call",
+              "callee": "do_nothing#0",
+              "nbArgs": 0
             }
           ]
         }
-      }
+      ]
     },
     {
-      "name": "consequent_0",
-      "instructions": [],
-      "terminator": {
-        "type": "goto",
-        "target": "begin_loop_0"
-      }
+      "name": "do_nothing#0",
+      "params": [],
+      "returnType": "void",
+      "blocks": [
+        {
+          "name": "entry",
+          "instructions": [
+            {
+              "type": "print",
+              "value": {
+                "type": "value",
+                "value": 1
+              }
+            }
+          ],
+          "terminator": {
+            "type": "return"
+          }
+        }
+      ]
     },
     {
-      "name": "begin_loop_0",
-      "instructions": [
+      "name": "floor_sqrt#0",
+      "params": [
         {
-          "type": "binop",
-          "dst": {
-            "type": "variable",
-            "name": "t1"
-          },
-          "operator": "Add",
-          "left": {
-            "type": "variable",
-            "name": "_guess#0"
-          },
-          "right": {
-            "type": "value",
-            "value": 1
-          },
-          "operandType": "i32"
-        },
-        {
-          "type": "binop",
-          "dst": {
-            "type": "variable",
-            "name": "t2"
-          },
-          "operator": "Add",
-          "left": {
-            "type": "variable",
-            "name": "_guess#0"
-          },
-          "right": {
-            "type": "value",
-            "value": 1
-          },
-          "operandType": "i32"
-        },
-        {
-          "type": "binop",
-          "dst": {
-            "type": "variable",
-            "name": "t3"
-          },
-          "operator": "Multiply",
-          "left": {
-            "type": "variable",
-            "name": "t1"
-          },
-          "right": {
-            "type": "variable",
-            "name": "t2"
-          },
-          "operandType": "i32"
-        },
-        {
-          "type": "binop",
-          "dst": {
-            "type": "variable",
-            "name": "t4"
-          },
-          "operator": "SmallerEqual",
-          "left": {
-            "type": "variable",
-            "name": "t3"
-          },
-          "right": {
-            "type": "variable",
-            "name": "n#0"
-          },
-          "operandType": "i32"
+          "name": "n#1",
+          "type": "i32"
         }
       ],
-      "terminator": {
-        "type": "loop",
-        "test": {
-          "type": "variable",
-          "name": "t4"
+      "returnType": "i32",
+      "blocks": [
+        {
+          "name": "entry",
+          "instructions": [
+            {
+              "type": "assign",
+              "dst": {
+                "type": "variable",
+                "name": "guess#1"
+              },
+              "value": {
+                "type": "value",
+                "value": 0
+              }
+            },
+            {
+              "type": "binop",
+              "dst": {
+                "type": "variable",
+                "name": "t0"
+              },
+              "operator": "Greater",
+              "left": {
+                "type": "variable",
+                "name": "n#1"
+              },
+              "right": {
+                "type": "value",
+                "value": 0
+              },
+              "operandType": "i32"
+            }
+          ],
+          "terminator": {
+            "type": "ifgoto",
+            "test": {
+              "type": "variable",
+              "name": "t0"
+            },
+            "consequent": "consequent_0",
+            "alternate": "end_if_0",
+            "join": {
+              "name": "end_if_0",
+              "instructions": [],
+              "terminator": {
+                "type": "return",
+                "value": {
+                  "type": "variable",
+                  "name": "result#1"
+                }
+              }
+            }
+          }
         },
-        "body": {
-          "name": "loop_body_0",
+        {
+          "name": "consequent_0",
+          "instructions": [],
+          "terminator": {
+            "type": "goto",
+            "target": "begin_loop_0"
+          }
+        },
+        {
+          "name": "begin_loop_0",
           "instructions": [
             {
               "type": "binop",
               "dst": {
                 "type": "variable",
-                "name": "_guess#0"
+                "name": "t1"
               },
               "operator": "Add",
               "left": {
                 "type": "variable",
-                "name": "_guess#0"
+                "name": "guess#1"
               },
               "right": {
                 "type": "value",
                 "value": 1
               },
               "operandType": "i32"
-            }
-          ],
-          "terminator": {
-            "type": "goto",
-            "target": "begin_loop_0"
-          }
-        },
-        "end": {
-          "name": "end_loop_0",
-          "instructions": [
+            },
             {
-              "type": "assign",
+              "type": "binop",
               "dst": {
                 "type": "variable",
-                "name": "result#0"
+                "name": "t2"
               },
-              "value": {
+              "operator": "Add",
+              "left": {
                 "type": "variable",
-                "name": "_guess#0"
-              }
+                "name": "guess#1"
+              },
+              "right": {
+                "type": "value",
+                "value": 1
+              },
+              "operandType": "i32"
+            },
+            {
+              "type": "binop",
+              "dst": {
+                "type": "variable",
+                "name": "t3"
+              },
+              "operator": "Multiply",
+              "left": {
+                "type": "variable",
+                "name": "t1"
+              },
+              "right": {
+                "type": "variable",
+                "name": "t2"
+              },
+              "operandType": "i32"
+            },
+            {
+              "type": "binop",
+              "dst": {
+                "type": "variable",
+                "name": "t4"
+              },
+              "operator": "SmallerEqual",
+              "left": {
+                "type": "variable",
+                "name": "t3"
+              },
+              "right": {
+                "type": "variable",
+                "name": "n#1"
+              },
+              "operandType": "i32"
             }
           ],
           "terminator": {
-            "type": "goto",
-            "target": "end_if_0"
+            "type": "loop",
+            "test": {
+              "type": "variable",
+              "name": "t4"
+            },
+            "body": {
+              "name": "loop_body_0",
+              "instructions": [
+                {
+                  "type": "binop",
+                  "dst": {
+                    "type": "variable",
+                    "name": "guess#1"
+                  },
+                  "operator": "Add",
+                  "left": {
+                    "type": "variable",
+                    "name": "guess#1"
+                  },
+                  "right": {
+                    "type": "value",
+                    "value": 1
+                  },
+                  "operandType": "i32"
+                }
+              ],
+              "terminator": {
+                "type": "goto",
+                "target": "begin_loop_0"
+              }
+            },
+            "end": {
+              "name": "end_loop_0",
+              "instructions": [
+                {
+                  "type": "assign",
+                  "dst": {
+                    "type": "variable",
+                    "name": "result#1"
+                  },
+                  "value": {
+                    "type": "variable",
+                    "name": "guess#1"
+                  }
+                }
+              ],
+              "terminator": {
+                "type": "goto",
+                "target": "end_if_0"
+              }
+            }
           }
-        }
-      }
-    },
-    {
-      "name": "end_if_0",
-      "instructions": [
+        },
         {
-          "type": "print",
-          "value": {
-            "type": "variable",
-            "name": "result#0"
+          "name": "end_if_0",
+          "instructions": [],
+          "terminator": {
+            "type": "return",
+            "value": {
+              "type": "variable",
+              "name": "result#1"
+            }
           }
         }
       ]

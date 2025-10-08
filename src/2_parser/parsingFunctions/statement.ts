@@ -97,6 +97,61 @@ export function parseWhileStatement(p: Parser) {
   return AST.createNode(AST.Type.LoopStatement, { test, body });
 }
 
+export function parseFunctionDeclarationStatement(p: Parser) {
+  p.expect(TokenType.Function);
+  const name = AST.createNode(AST.Type.IdentifierExpression, { name: p.expect(TokenType.Identifier).value });
+  const params = parseFunctionParameters(p);
+
+  //TODO inference for return type
+  let returnTypeDef: AST.Node<AST.Type.IdentifierExpression> | undefined;
+  if (p.peek().type === TokenType.Colon) {
+    p.expect(TokenType.Colon);
+    returnTypeDef = AST.createNode(AST.Type.IdentifierExpression, { name: p.expect(TokenType.Identifier).value });
+  }
+
+  const body = parseBlockStatement(p);
+
+  return AST.createNode(AST.Type.FunctionDeclarationStatement, { name, params, returnTypeDef, body });
+}
+
+function parseFunctionParameters(p: Parser) {
+  const params: AST.Node<AST.Type.VariableDeclarationStatement>[] = [];
+  p.expect(TokenType.OpenParen);
+
+  if (p.peek().type === TokenType.CloseParen) {
+    p.expect(TokenType.CloseParen);
+    return params;
+  }
+
+  parseParameter();
+  while (p.peek().type !== TokenType.CloseParen) {
+    p.expect(TokenType.Comma);
+    parseParameter();
+  }
+
+  p.expect(TokenType.CloseParen);
+
+  return params;
+
+  function parseParameter() {
+    const identifier = AST.createNode(AST.Type.IdentifierExpression, { name: p.expect(TokenType.Identifier).value });
+    p.expect(TokenType.Colon);
+    const typeDef = AST.createNode(AST.Type.IdentifierExpression, { name: p.expect(TokenType.Identifier).value });
+
+    params.push(AST.createNode(AST.Type.VariableDeclarationStatement, { identifiers: identifier, typeDef }));
+  }
+}
+
+export function parseReturnStatement(p: Parser) {
+  p.expect(TokenType.Return);
+  if (p.peek().type === TokenType.EndOfStatement && p.eat()) return AST.createNode(AST.Type.ReturnStatement, {});
+
+  const expression = parseExpression(p, BindingPower.default_bp);
+  p.expect(TokenType.EndOfStatement);
+
+  return AST.createNode(AST.Type.ReturnStatement, { expression });
+}
+
 export function parsePrintStatement(p: Parser) {
   p.expect(TokenType.Print);
   const expression = parseExpression(p, BindingPower.default_bp);

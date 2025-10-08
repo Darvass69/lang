@@ -11,12 +11,16 @@ export namespace AST {
     IfStatement,
     LoopStatement,
     PrintStatement,
+    FunctionDeclarationStatement,
+    ReturnStatement,
 
     // PrefixExpression,
 
     AssignmentExpression,
 
     BinaryExpression,
+
+    FunctionCallExpression,
 
     BooleanExpression,
     NumberExpression,
@@ -31,6 +35,13 @@ export namespace AST {
     [Type.BlockStatement]: { body: Statement[] };
     [Type.IfStatement]: { test: Expression; consequent: Node<Type.BlockStatement>; alternate?: Node<Type.IfStatement | Type.BlockStatement> };
     [Type.LoopStatement]: { /*init?: Statement[];*/ test: Expression; /*update?: Expression;*/ body: Node<Type.BlockStatement> }; //TODO init, how do we split statements?
+    [Type.FunctionDeclarationStatement]: {
+      name: Node<Type.IdentifierExpression>;
+      params: Node<Type.VariableDeclarationStatement>[];
+      returnTypeDef?: Node<Type.IdentifierExpression>;
+      body: Node<Type.BlockStatement>;
+    };
+    [Type.ReturnStatement]: { expression?: Expression };
     [Type.PrintStatement]: { expression: Expression };
 
     [Type.AssignmentExpression]: {
@@ -38,13 +49,15 @@ export namespace AST {
       expression: Expression;
       // operator?: Token;
     };
-
     [Type.BinaryExpression]: {
       left: Expression;
       operator: Token; //TODO specify what token can be here
       right: Expression;
     };
-
+    [Type.FunctionCallExpression]: {
+      callee: Node<Type.IdentifierExpression>;
+      args: Expression[];
+    };
     [Type.BooleanExpression]: {
       value: string;
     };
@@ -71,6 +84,8 @@ export namespace AST {
         | Type.BlockStatement
         | Type.IfStatement
         | Type.LoopStatement
+        | Type.FunctionDeclarationStatement
+        | Type.ReturnStatement
         | Type.PrintStatement;
     }
   >;
@@ -81,6 +96,7 @@ export namespace AST {
       type:
         | Type.AssignmentExpression
         | Type.BinaryExpression
+        | Type.FunctionCallExpression
         | Type.BooleanExpression
         | Type.NumberExpression
         | Type.IdentifierExpression;

@@ -55,8 +55,13 @@ export enum TokenType {
   // Break, // break
   // Continue, // continue
 
+  //~ Functions
+  Function, // function
+  Return, // return
+
   //~ Punctuation
   Colon, // :
+  Comma, // ,
 
   //~ Block
   OpenCurly, // {
@@ -114,7 +119,11 @@ const RESERVED_SYMBOLS = {
   "else": TokenType.Else,
   "while": TokenType.While,
 
+  "function": TokenType.Function,
+  "return": TokenType.Return,
+
   ":": TokenType.Colon,
+  ",": TokenType.Comma,
 
   "{": TokenType.OpenCurly,
   "}": TokenType.CloseCurly,

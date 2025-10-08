@@ -2,14 +2,168 @@
   "type": "Module",
   "body": [
     {
+      "type": "FunctionDeclarationStatement",
+      "name": {
+        "type": "IdentifierExpression",
+        "name": "floor_sqrt"
+      },
+      "params": [
+        {
+          "type": "VariableDeclarationStatement",
+          "identifiers": {
+            "type": "IdentifierExpression",
+            "name": "n"
+          },
+          "typeDef": {
+            "type": "IdentifierExpression",
+            "name": "int32"
+          }
+        }
+      ],
+      "returnTypeDef": {
+        "type": "IdentifierExpression",
+        "name": "int32"
+      },
+      "body": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "VariableDeclarationStatement",
+            "identifiers": {
+              "type": "IdentifierExpression",
+              "name": "guess"
+            },
+            "init": {
+              "type": "NumberExpression",
+              "value": "0"
+            }
+          },
+          {
+            "type": "VariableDeclarationStatement",
+            "identifiers": {
+              "type": "IdentifierExpression",
+              "name": "result"
+            },
+            "typeDef": {
+              "type": "IdentifierExpression",
+              "name": "int32"
+            }
+          },
+          {
+            "type": "IfStatement",
+            "test": {
+              "type": "BinaryExpression",
+              "left": {
+                "type": "IdentifierExpression",
+                "name": "n"
+              },
+              "operator": "Greater",
+              "right": {
+                "type": "NumberExpression",
+                "value": "0"
+              }
+            },
+            "consequent": {
+              "type": "BlockStatement",
+              "body": [
+                {
+                  "type": "LoopStatement",
+                  "test": {
+                    "type": "BinaryExpression",
+                    "left": {
+                      "type": "BinaryExpression",
+                      "left": {
+                        "type": "BinaryExpression",
+                        "left": {
+                          "type": "IdentifierExpression",
+                          "name": "guess"
+                        },
+                        "operator": "Add",
+                        "right": {
+                          "type": "NumberExpression",
+                          "value": "1"
+                        }
+                      },
+                      "operator": "Multiply",
+                      "right": {
+                        "type": "BinaryExpression",
+                        "left": {
+                          "type": "IdentifierExpression",
+                          "name": "guess"
+                        },
+                        "operator": "Add",
+                        "right": {
+                          "type": "NumberExpression",
+                          "value": "1"
+                        }
+                      }
+                    },
+                    "operator": "SmallerEqual",
+                    "right": {
+                      "type": "IdentifierExpression",
+                      "name": "n"
+                    }
+                  },
+                  "body": {
+                    "type": "BlockStatement",
+                    "body": [
+                      {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                          "type": "AssignmentExpression",
+                          "identifier": {
+                            "type": "IdentifierExpression",
+                            "name": "guess"
+                          },
+                          "expression": {
+                            "type": "BinaryExpression",
+                            "left": {
+                              "type": "IdentifierExpression",
+                              "name": "guess"
+                            },
+                            "operator": "Add",
+                            "right": {
+                              "type": "NumberExpression",
+                              "value": "1"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "ExpressionStatement",
+                  "expression": {
+                    "type": "AssignmentExpression",
+                    "identifier": {
+                      "type": "IdentifierExpression",
+                      "name": "result"
+                    },
+                    "expression": {
+                      "type": "IdentifierExpression",
+                      "name": "guess"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "ReturnStatement",
+            "expression": {
+              "type": "IdentifierExpression",
+              "name": "result"
+            }
+          }
+        ]
+      }
+    },
+    {
       "type": "VariableDeclarationStatement",
       "identifiers": {
         "type": "IdentifierExpression",
         "name": "n"
-      },
-      "typeDef": {
-        "type": "IdentifierExpression",
-        "name": "bool"
       },
       "init": {
         "type": "NumberExpression",
@@ -20,120 +174,18 @@
       "type": "VariableDeclarationStatement",
       "identifiers": {
         "type": "IdentifierExpression",
-        "name": "_guess"
+        "name": "res"
       },
       "init": {
-        "type": "NumberExpression",
-        "value": "0"
-      }
-    },
-    {
-      "type": "VariableDeclarationStatement",
-      "identifiers": {
-        "type": "IdentifierExpression",
-        "name": "result"
-      },
-      "typeDef": {
-        "type": "IdentifierExpression",
-        "name": "int32"
-      }
-    },
-    {
-      "type": "IfStatement",
-      "test": {
-        "type": "BinaryExpression",
-        "left": {
+        "type": "FunctionCallExpression",
+        "callee": {
           "type": "IdentifierExpression",
-          "name": "n"
+          "name": "floor_sqrt"
         },
-        "operator": "Greater",
-        "right": {
-          "type": "NumberExpression",
-          "value": "0"
-        }
-      },
-      "consequent": {
-        "type": "BlockStatement",
-        "body": [
+        "args": [
           {
-            "type": "LoopStatement",
-            "test": {
-              "type": "BinaryExpression",
-              "left": {
-                "type": "BinaryExpression",
-                "left": {
-                  "type": "BinaryExpression",
-                  "left": {
-                    "type": "IdentifierExpression",
-                    "name": "_guess"
-                  },
-                  "operator": "Add",
-                  "right": {
-                    "type": "NumberExpression",
-                    "value": "1"
-                  }
-                },
-                "operator": "Multiply",
-                "right": {
-                  "type": "BinaryExpression",
-                  "left": {
-                    "type": "IdentifierExpression",
-                    "name": "_guess"
-                  },
-                  "operator": "Add",
-                  "right": {
-                    "type": "NumberExpression",
-                    "value": "1"
-                  }
-                }
-              },
-              "operator": "SmallerEqual",
-              "right": {
-                "type": "IdentifierExpression",
-                "name": "n"
-              }
-            },
-            "body": {
-              "type": "BlockStatement",
-              "body": [
-                {
-                  "type": "ExpressionStatement",
-                  "expression": {
-                    "type": "AssignmentExpression",
-                    "identifier": {
-                      "type": "IdentifierExpression",
-                      "name": "_guess"
-                    },
-                    "expression": {
-                      "type": "BinaryExpression",
-                      "left": {
-                        "type": "IdentifierExpression",
-                        "name": "_guess"
-                      },
-                      "operator": "Add",
-                      "right": {
-                        "type": "NumberExpression",
-                        "value": "1"
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "type": "ExpressionStatement",
-            "expression": {
-              "type": "AssignmentExpression",
-              "identifier": {
-                "type": "IdentifierExpression",
-                "name": "result"
-              },
-              "expression": {
-                "type": "IdentifierExpression",
-                "name": "_guess"
-              }
-            }
+            "type": "IdentifierExpression",
+            "name": "n"
           }
         ]
       }
@@ -142,7 +194,41 @@
       "type": "PrintStatement",
       "expression": {
         "type": "IdentifierExpression",
-        "name": "result"
+        "name": "res"
+      }
+    },
+    {
+      "type": "FunctionDeclarationStatement",
+      "name": {
+        "type": "IdentifierExpression",
+        "name": "do_nothing"
+      },
+      "params": [],
+      "body": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "PrintStatement",
+            "expression": {
+              "type": "NumberExpression",
+              "value": "1"
+            }
+          },
+          {
+            "type": "ReturnStatement"
+          }
+        ]
+      }
+    },
+    {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "FunctionCallExpression",
+        "callee": {
+          "type": "IdentifierExpression",
+          "name": "do_nothing"
+        },
+        "args": []
       }
     }
   ]

@@ -1,14 +1,35 @@
-$entry:
-  n#0 = 27
-  _guess#0 = 0
-  t0 = n#0 > 0 (i32)
-  if t0 goto $consequent_0 else $end_if_0
-$consequent_0:
-  goto $begin_loop_0
-$begin_loop_0:
-  t1 = _guess#0 + 1 (i32)
-  t2 = _guess#0 + 1 (i32)
-  t3 = t1 * t2 (i32)
-  t4 = t3 <= n#0 (i32)
-$end_if_0:
-  print result#0
+function start() returns (void) {
+  $entry:
+    n#0 = 27
+    push_param n#0
+    res#0 = call floor_sqrt#0(1)
+    print res#0
+    undefinedcall do_nothing#0(0)
+}
+function do_nothing#0() returns (void) {
+  $entry:
+    print 1
+    returnundefined
+}
+function floor_sqrt#0(n#1: i32) returns (i32) {
+  $entry:
+    guess#1 = 0
+    t0 = n#1 > 0 (i32)
+    if t0 goto $consequent_0 else $end_if_0
+  $consequent_0:
+    goto $begin_loop_0
+  $begin_loop_0:
+    t1 = guess#1 + 1 (i32)
+    t2 = guess#1 + 1 (i32)
+    t3 = t1 * t2 (i32)
+    t4 = t3 <= n#1 (i32)
+    loop t4 body $loop_body_0 end $end_loop_0
+  $loop_body_0:
+    guess#1 = guess#1 + 1 (i32)
+    goto $begin_loop_0
+  $end_loop_0:
+    result#1 = guess#1
+    goto $end_if_0
+  $end_if_0:
+    return result#1
+}

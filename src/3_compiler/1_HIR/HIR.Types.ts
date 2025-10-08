@@ -4,9 +4,15 @@ import { AST } from "../../2_parser/astNodes";
 /* -------------------------------- Typed AST ------------------------------- */
 
 export namespace TypedAST {
-  export interface ResolvedType {
-    type: "int32" | "bool";
-  }
+  export type ResolvedType = {
+    type: "int32" | "bool" | "void";
+  };
+
+  export type FunctionType = {
+    type: "function";
+    params: ResolvedType[];
+    returnType: ResolvedType;
+  };
 
   type NodeShapes = {
     [Type.Module]: { body: Statement[] };
@@ -15,6 +21,13 @@ export namespace TypedAST {
     [Type.BlockStatement]: { body: Statement[] };
     [Type.IfStatement]: { test: Expression; consequent: Node<Type.BlockStatement>; alternate?: Node<Type.IfStatement | Type.BlockStatement> };
     [Type.LoopStatement]: { test: Expression; body: Node<Type.BlockStatement> };
+    [Type.FunctionDeclarationStatement]: {
+      name: string;
+      params: Node<Type.IdentifierExpression>[];
+      returnType?: ResolvedType;
+      body: Node<Type.BlockStatement>;
+    };
+    [Type.ReturnStatement]: { expression?: Expression };
     [Type.PrintStatement]: { expression: Expression };
 
     [Type.AssignmentExpression]: {
@@ -22,14 +35,17 @@ export namespace TypedAST {
       expression: Expression;
       resolvedType: ResolvedType;
     };
-
     [Type.BinaryExpression]: {
       left: Expression;
       operator: Binop;
       right: Expression;
       resolvedType: ResolvedType;
     };
-
+    [Type.FunctionCallExpression]: {
+      callee: string;
+      args: Expression[];
+      resolvedType: ResolvedType;
+    };
     [Type.BooleanExpression]: {
       value: string;
       resolvedType: ResolvedType;
@@ -59,6 +75,8 @@ export namespace TypedAST {
         | Type.BlockStatement
         | Type.IfStatement
         | Type.LoopStatement
+        | Type.FunctionDeclarationStatement
+        | Type.ReturnStatement
         | Type.PrintStatement;
     }
   >;
@@ -69,6 +87,7 @@ export namespace TypedAST {
       type:
         | Type.AssignmentExpression
         | Type.BinaryExpression
+        | Type.FunctionCallExpression
         | Type.BooleanExpression
         | Type.NumberExpression
         | Type.IdentifierExpression;
@@ -114,6 +133,10 @@ export function hirToStringJson(this: any, key: any, value: any) {
   }
 
   return value;
+}
+
+export function printHIR(ast: any) {
+  return JSON.stringify(ast, hirToStringJson, 2);
 }
 
 export enum Binop {

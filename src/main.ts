@@ -4,7 +4,7 @@ import { tokenize } from "./1_lexer/lexer";
 import { parseAST, Parser } from "./2_parser/parser";
 import { astToStringJson } from "./2_parser/astNodes";
 import { generateMIR } from "./3_compiler/2_MIR/compiler";
-import { mirToStringJson, prettyPrintMIR } from "./3_compiler/2_MIR/MIR-Types";
+import { mirToStringJson, moduleToGraphView, prettyPrintMIR } from "./3_compiler/2_MIR/MIR-Types";
 import { generateLIR } from "./3_compiler/3_LIR/compiler";
 import { generateBinary } from "./3_compiler/4_WASM/compiler";
 import { hirToStringJson } from "./3_compiler/1_HIR/HIR.Types";
@@ -41,6 +41,7 @@ async function main() {
   const MIR = generateMIR(HIR);
   fs.writeFileSync(outPath + "mir.json", JSON.stringify(MIR, mirToStringJson, 2));
   fs.writeFileSync(outPath + "mir.txt", prettyPrintMIR(MIR));
+  fs.writeFileSync(outPath + "mir.dot", moduleToGraphView(MIR));
   console.info("successfully created the MIR !!!");
 
   const LIR = generateLIR(MIR);

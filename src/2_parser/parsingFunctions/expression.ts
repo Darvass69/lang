@@ -70,3 +70,36 @@ export function parseAssignmentExpression(p: Parser, left: AST.Expression, bp: B
 
   return AST.createNode(AST.Type.AssignmentExpression, { identifier, expression });
 }
+
+export function parseFunctionCallExpression(p: Parser, left: AST.Expression, bp: BindingPower) {
+  const identifier = left.type === AST.Type.IdentifierExpression ? left : undefined;
+
+  if (identifier === undefined) {
+    throw `Parser: expected identifier, got ${left.type}`;
+  }
+
+  const args = parseArguments(p);
+
+  return AST.createNode(AST.Type.FunctionCallExpression, { callee: identifier, args });
+}
+
+function parseArguments(p: Parser) {
+  const args: AST.Expression[] = [];
+
+  p.expect(TokenType.OpenParen);
+
+  if (p.peek().type === TokenType.CloseParen) {
+    p.expect(TokenType.CloseParen);
+    return args;
+  }
+
+  args.push(parseExpression(p, BindingPower.default_bp));
+  while (p.peek().type !== TokenType.CloseParen) {
+    p.expect(TokenType.Comma);
+    args.push(parseExpression(p, BindingPower.default_bp));
+  }
+
+  p.expect(TokenType.CloseParen);
+
+  return args;
+}

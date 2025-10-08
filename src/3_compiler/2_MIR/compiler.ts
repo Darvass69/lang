@@ -1,37 +1,76 @@
 import { TypedAST } from "../1_HIR/HIR.Types";
-import { Block, Instruction, MIR, Operand, Terminator, Variable } from "./MIR-Types";
+import { Block, Function, Instruction, Module, Operand, Param, Terminator, Variable } from "./MIR-Types";
 
-export function generateMIR(node: TypedAST.Node<TypedAST.Type.Module>): MIR {
-  const beginningBlock: Block = { name: "entry", instructions: [] };
+export function generateMIR(node: TypedAST.Node<TypedAST.Type.Module>): Module {
+  const functions: Function[] = [];
+  const start = generateFunctionDeclarationStatement(
+    TypedAST.createNode(TypedAST.Type.FunctionDeclarationStatement, {
+      name: "start",
+      params: [],
+      body: TypedAST.createNode(TypedAST.Type.BlockStatement, { body: node.body }),
+    }),
+    functions,
+  ) as Function & { name: "start" };
 
+  return {
+    start,
+    functions: functions.reverse(),
+  };
+}
+
+function generateFunctionDeclarationStatement(node: TypedAST.Node<TypedAST.Type.FunctionDeclarationStatement>, declaredFunctions: Function[]): Function {
+  const [entry] = parseBody(node.body.body, { name: "entry", instructions: [] }, declaredFunctions);
+
+  const fn: Function = {
+    name: node.name,
+    params: node.params.map((param) => ({ name: param.name, type: "i32" })),
+    returnType: node.returnType && node.returnType.type !== "void" ? "i32" : "void",
+    entry,
+    blocks: getBlocks(entry),
+  };
+
+  declaredFunctions.push(fn);
+  return fn;
+}
+
+function parseBody(body: TypedAST.Statement[], beginningBlock: Block, declaredFunctions: Function[]) {
   let endingBlock: Block = beginningBlock;
-  for (const stmt of node.body) {
+
+  for (const stmt of body) {
+    if (stmt.type === TypedAST.Type.FunctionDeclarationStatement) {
+      generateFunctionDeclarationStatement(stmt, declaredFunctions);
+      continue;
+    }
     endingBlock = generateStatement(stmt, endingBlock);
   }
 
-  uniqueBlocks.clear();
-  return { entry: beginningBlock, blocks: getBlocks(beginningBlock, []) };
+  return [beginningBlock, endingBlock];
 }
 
-const uniqueBlocks: Set<Block> = new Set<Block>();
-function getBlocks(block: Block, blocks: Block[]) {
-  if (uniqueBlocks.has(block)) return blocks;
-  uniqueBlocks.add(block);
-  blocks.push(block);
+function getBlocks(block: Block) {
+  const blocks: Block[] = [];
+  const uniqueBlocks: Set<Block> = new Set<Block>();
 
-  switch (block.terminator?.type) {
-    case "goto": {
-      getBlocks(block.terminator.target, blocks);
-      break;
-    }
-    case "ifgoto": {
-      getBlocks(block.terminator.consequent, blocks);
-      getBlocks(block.terminator.alternate, blocks);
-      break;
+  getBlocksRecursive(block);
+  return blocks;
+
+  function getBlocksRecursive(block: Block) {
+    if (uniqueBlocks.has(block)) return;
+    uniqueBlocks.add(block);
+    blocks.push(block);
+
+    switch (block.terminator?.type) {
+      case "goto": {
+        getBlocksRecursive(block.terminator.target);
+        break;
+      }
+      case "ifgoto": {
+        getBlocksRecursive(block.terminator.consequent);
+        getBlocksRecursive(block.terminator.alternate);
+        break;
+      }
     }
   }
-
-  return blocks;
 }
 
 /* ------------------------------- Statements ------------------------------- */
@@ -40,7 +79,7 @@ function getBlocks(block: Block, blocks: Block[]) {
  * @param stmt
  * @returns The ending block of the statement
  */
-function generateStatement(stmt: TypedAST.Statement, beginningBlock: Block): Block {
+function generateStatement(stmt: Exclude<TypedAST.Statement, TypedAST.Node<TypedAST.Type.FunctionDeclarationStatement>>, beginningBlock: Block): Block {
   /*
   We pass the beginning block to each handler so that they can add to it.
   They return the ending block so  we can change its terminator to the next block in the graph.
@@ -62,8 +101,14 @@ function generateStatement(stmt: TypedAST.Statement, beginningBlock: Block): Blo
     case TypedAST.Type.LoopStatement: {
       return generateLoopStatement(stmt, beginningBlock);
     }
+    case TypedAST.Type.ReturnStatement: {
+      return generateReturnStatement(stmt, beginningBlock);
+    }
     case TypedAST.Type.PrintStatement: {
       return generatePrintStatement(stmt, beginningBlock);
+    }
+    default: {
+      throw `MIR: statement not supported: ${(stmt as TypedAST.Statement).type}`;
     }
   }
 }
@@ -84,11 +129,8 @@ function generateVariableDeclarationStatement(node: TypedAST.Node<TypedAST.Type.
 }
 
 function generateBlockStatement(node: TypedAST.Node<TypedAST.Type.BlockStatement>, beginningBlock: Block): Block {
-  let endingBlock: Block = beginningBlock;
-
-  for (const stmt of node.body) {
-    endingBlock = generateStatement(stmt, endingBlock);
-  }
+  //TODO declared functions
+  const [, endingBlock] = parseBody(node.body, beginningBlock, []);
 
   return endingBlock;
 }
@@ -156,6 +198,17 @@ function generateLoopStatement(node: TypedAST.Node<TypedAST.Type.LoopStatement>,
   return endLoopBlock;
 }
 
+function generateReturnStatement(node: TypedAST.Node<TypedAST.Type.ReturnStatement>, beginningBlock: Block): Block {
+  if (node.expression === undefined) {
+    beginningBlock.terminator = { type: "return" };
+  } else {
+    const [returnValue, ...instructions] = generateExpression(node.expression);
+    beginningBlock.instructions.push(...instructions);
+    beginningBlock.terminator = { type: "return", value: returnValue };
+  }
+  return beginningBlock;
+}
+
 function generatePrintStatement(node: TypedAST.Node<TypedAST.Type.PrintStatement>, beginningBlock: Block): Block {
   const [value, ...instructions] = generateExpression(node.expression);
   instructions.push({ type: "print", value });
@@ -174,6 +227,9 @@ function generateExpression(expr: TypedAST.Expression, target?: Variable) {
     case TypedAST.Type.BinaryExpression: {
       return generateBinaryExpression(expr, target);
     }
+    case TypedAST.Type.FunctionCallExpression: {
+      return generateFunctionCallExpression(expr, target);
+    }
     case TypedAST.Type.BooleanExpression: {
       return generateBooleanExpression(expr, target);
     }
@@ -182,6 +238,9 @@ function generateExpression(expr: TypedAST.Expression, target?: Variable) {
     }
     case TypedAST.Type.IdentifierExpression: {
       return generateIdentifierExpression(expr, target);
+    }
+    default: {
+      throw `MIR: expression not supported: ${(expr as TypedAST.Expression).type}`;
     }
   }
 }
@@ -202,6 +261,27 @@ function generateBinaryExpression(node: TypedAST.Node<TypedAST.Type.BinaryExpres
   // TODO: resolve operand types to know what operation to use later (i32 vs i64).
 
   return [target, ...leftInstructions, ...rightInstructions, { type: "binop", dst: target, operator, left, right, operandType: "i32" }];
+}
+
+function generateFunctionCallExpression(node: TypedAST.Node<TypedAST.Type.FunctionCallExpression>, target?: Variable): [target: Operand, ...instructions: Instruction[]] {
+  const [loadArgs, argsInstructions] = node.args.map((arg) => generateExpression(arg))
+    .reduce<[Instruction[], Instruction[]]>(([targets, accumulatedInstructions], [target, ...instructions]) => {
+      targets.push({ type: "push_param", operand: target });
+      accumulatedInstructions.push(...instructions);
+      return [targets, accumulatedInstructions];
+    }, [[], []]);
+
+  if (target === undefined) {
+    target = newTemp();
+  }
+
+  let dst: Variable | undefined;
+  if (node.resolvedType.type !== "void") {
+    dst = target;
+  }
+
+  //TODO how do we handle multiple return values?
+  return [target, ...argsInstructions, ...loadArgs, { type: "call", dst, callee: node.callee, nbArgs: loadArgs.length }];
 }
 
 function generateBooleanExpression(node: TypedAST.Node<TypedAST.Type.BooleanExpression>, target?: Variable): [target: Operand, ...instructions: Instruction[]] {
