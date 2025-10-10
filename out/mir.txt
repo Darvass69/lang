@@ -4,12 +4,12 @@ function start() returns (void) {
     push_param n#0
     res#0 = call floor_sqrt#0(1)
     print res#0
-    undefinedcall do_nothing#0(0)
+    call do_nothing#0(0)
 }
 function do_nothing#0() returns (void) {
   $entry:
     print 1
-    returnundefined
+    return
 }
 function floor_sqrt#0(n#1: i32) returns (i32) {
   $entry:

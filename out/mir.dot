@@ -1,0 +1,43 @@
+digraph MIR {
+  graph [compound = true; fontsize = 12; splines = true;];
+  node [shape = box; fontname = "Courier New"; fontsize = 10;];
+  edge [fontname = "Courier New"; fontsize = 10;];
+  subgraph "cluster_start" {
+    label = "start";
+    color = "#cfe2ff";
+    style = "rounded,filled";
+    "start::entry" [label = "n#0 = 27\npush_param n#0\nres#0 = call floor_sqrt#0(1)\nprint res#0\ncall do_nothing#0(0)"];
+    "start::entry" -> "start#end";
+    "start#end" [label="end", shape=oval];
+  }
+  subgraph "cluster_do_nothing#0" {
+    label = "do_nothing#0";
+    color = "#cfe2ff";
+    style = "rounded,filled";
+    "do_nothing#0::entry" [label = "print 1"];
+    "do_nothing#0::entry" -> "do_nothing#0#end" [label = "return"];
+    "do_nothing#0#end" [label="end", shape=oval];
+  }
+  subgraph "cluster_floor_sqrt#0" {
+    label = "floor_sqrt#0";
+    color = "#cfe2ff";
+    style = "rounded,filled";
+    "floor_sqrt#0::entry" [label = "guess#1 = 0\nt0 = n#1 > 0 (i32)"];
+    "floor_sqrt#0::entry" -> "floor_sqrt#0::consequent_0" [label = "if t0"];
+    "floor_sqrt#0::consequent_0" [label = ""];
+    "floor_sqrt#0::consequent_0" -> "floor_sqrt#0::begin_loop_0";
+    "floor_sqrt#0::begin_loop_0" [label = "t1 = guess#1 + 1 (i32)\nt2 = guess#1 + 1 (i32)\nt3 = t1 * t2 (i32)\nt4 = t3 <= n#1 (i32)"];
+    "floor_sqrt#0::begin_loop_0" -> "floor_sqrt#0::loop_body_0" [label = "loop t4"];
+    "floor_sqrt#0::loop_body_0" [label = "guess#1 = guess#1 + 1 (i32)"];
+    "floor_sqrt#0::loop_body_0" -> "floor_sqrt#0::begin_loop_0";
+    "floor_sqrt#0::begin_loop_0" -> "floor_sqrt#0::end_loop_0" [label = "end"];
+    "floor_sqrt#0::end_loop_0" [label = "result#1 = guess#1"];
+    "floor_sqrt#0::end_loop_0" -> "floor_sqrt#0::end_if_0";
+    "floor_sqrt#0::end_if_0" [label = ""];
+    "floor_sqrt#0::end_if_0" -> "floor_sqrt#0#end" [label = "return result#1"];
+    "floor_sqrt#0::entry" -> "floor_sqrt#0::end_if_0" [label = "else"];
+    "floor_sqrt#0#end" [label="end", shape=oval];
+  }
+  "start::entry" -> "floor_sqrt#0::entry" [style=dashed label="call"];
+  "start::entry" -> "do_nothing#0::entry" [style=dashed label="call"];
+}
